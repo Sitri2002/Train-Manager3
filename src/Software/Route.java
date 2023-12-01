@@ -1,11 +1,11 @@
 package Software;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import People.*;
 import Hardware.*;
-import java.io.Serializable;
 
-public class Route implements Serializable{
+public class Route implements Serializable {
 	private String startingLocation;
 	private String endLocation;
 	private int departureTime;

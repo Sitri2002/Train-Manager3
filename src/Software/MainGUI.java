@@ -5,6 +5,8 @@ import javax.swing.*;
 import People.Manager;
 import People.Passenger;
 import People.Person;
+import Hardware.Train;
+import Software.Data;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -18,7 +20,6 @@ import java.util.ArrayList;
 import java.awt.image.FilteredImageSource;
 
 public class MainGUI extends JFrame {
-	
     public MainGUI() {
         setTitle("WILDCAT RAILWAY");
         setSize(1000, 700);
@@ -104,11 +105,12 @@ public class MainGUI extends JFrame {
 }
 
 class LoginPanel extends JPanel {
+	private Data data1 = new Data();
 	private ArrayList<Person> people_list = new ArrayList<Person>();
 	private Person loggedin;
     private JTextField usernameField;
     private JPasswordField passwordField;
-
+    
     
     public LoginPanel() {
         setLayout(new BorderLayout());
@@ -343,7 +345,197 @@ class LoginPanel extends JPanel {
         pane1.add(manage_train);
         pane1.add(cancel_train);
         pane1.add(create_new_train);
+        
+        manage_train.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	manage_train();
+            }
+        });
+        
+        cancel_train.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cancel_train();
+            }
+        });
+        
+        create_new_train.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	create_train();
+            }
+        });
+        
+    }
+    private void create_train() {
+    	JTextField traincode = new JTextField();
+		
+		Object[] inputFields = {"Train code:", traincode};
+		
+		int option = JOptionPane.showConfirmDialog(null, inputFields, "Create Train", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		String code_str = traincode.getText();
+		
+		
+		if (option == JOptionPane.OK_OPTION) {
+			if(Integer.valueOf(code_str) < 0) {
+				String error_message = "Train code must 0 or greater";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				Train t = new Train();
+				t.setTrainCode(Integer.valueOf(code_str));
+				data1.add_train(t);
+				
+				String success_msg = "Successfully created new train with code " + code_str;
+				JOptionPane.showMessageDialog(null, success_msg, "Success", JOptionPane.PLAIN_MESSAGE);
+			}
+		}
+    }
+    
+    private void cancel_train() {
+    	JTextField traincode = new JTextField();
+		
+		Object[] inputFields = {"Train code:", traincode};
+		
+		int option = JOptionPane.showConfirmDialog(null, inputFields, "Create Train", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		String code_str = traincode.getText();
+		
+		if (option == JOptionPane.OK_OPTION) {
+			int index = -1;
+			for(int i = 0; i < data1.get_trains().size(); i++) {
+				if (data1.get_trains().get(i).getTrainCode() == Integer.valueOf(code_str)) {
+					index = i;
+				}
+			}
+			if(index == -1) {
+				String error_message = "Train not found";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				data1.get_trains().remove(data1.get_trains().get(index));
+				String success_msg = "Successfully removed train " + code_str;
+				JOptionPane.showMessageDialog(null, success_msg, "Success", JOptionPane.PLAIN_MESSAGE);
+			}
+		}
+    }
+
+    private void manage_train() {
+    	// implement later
+    	JTextField traincode = new JTextField();
+		
+		Object[] inputFields = {"Enter the train code you would like to manage:", traincode};
+		
+		int option = JOptionPane.showConfirmDialog(null, inputFields, "Manage Train", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		String code_str = traincode.getText();
+		
+		if (option == JOptionPane.OK_OPTION) {
+			if(Integer.valueOf(code_str) < 0) {
+				String error_message = "Train code must 0 or greater";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				int index = -1;
+				for(int i = 0; i < data1.get_trains().size(); i++) {
+					if (data1.get_trains().get(i).getTrainCode() == Integer.valueOf(code_str)) {
+						index = i;
+					}
+				}
+				
+				if(index == -1) {
+					String error_msg = "Train " + code_str + " does not exist";
+					JOptionPane.showMessageDialog(null, error_msg, "Error", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				else {
+					String success_msg = "Found train " + code_str;
+					JOptionPane.showMessageDialog(null, success_msg, "Success", JOptionPane.PLAIN_MESSAGE);
+					ManageTrainPanel(data1.get_trains().get(index));
+				}	
+			}
+		}
+    }
+    public void ManageTrainPanel(Train t) {
+		JFrame manage_menu = new JFrame("Manage Train");
+		manage_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		manage_menu.setSize(265, 300);
+		manage_menu.setLocationRelativeTo(null);
+
+        JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        manage_menu.setContentPane(pane1);
+        
+        pane1.setBackground(new Color(173, 216, 230));
+        
+        manage_menu.setContentPane(pane1);
+        
+        JButton update_status = new JButton("Update status");
+        JButton set_ticket_price = new JButton("Set ticket price");
+        JButton manage_passengers = new JButton("Manage passengers");
+        JButton change_ticket_price = new JButton("Change ticket price");
+        JButton view_train_status = new JButton("View train status");
+        
+        update_status.setPreferredSize(new Dimension(200, 40));
+        set_ticket_price.setPreferredSize(new Dimension(200, 40));
+        manage_passengers.setPreferredSize(new Dimension(200, 40));
+        change_ticket_price.setPreferredSize(new Dimension(200, 40));
+        view_train_status.setPreferredSize(new Dimension(200, 40));
+        
+        pane1.add(update_status); pane1.add(set_ticket_price); pane1.add(manage_passengers); pane1.add(change_ticket_price); pane1.add(view_train_status);
+        
+        update_status.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	update_status(t);
+            }
+        });
+        
+        set_ticket_price.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                set_ticket_price(t);
+            }
+        });
+        
+        manage_passengers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	manage_passengers(t);
+            }
+        });
+        
+        change_ticket_price.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	change_ticket_price(t);
+            }
+        });
+        
+        view_train_status.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	view_train_status(t);
+            }
+        });
+        
+        manage_menu.setVisible(true);
+	}
+    
+    private void update_status(Train t) {
+    	
+    }
+    
+    private void set_ticket_price(Train t) {
+    	
+    }
+    
+    private void manage_passengers(Train t) {
+    	
+    }
+    
+    private void change_ticket_price(Train t) {
+    	
+    }
+    
+    private void view_train_status(Train t) {
+    	JOptionPane.showMessageDialog(null, "Train " + t.getTrainCode() + " is " + t.getStatus(), "Train Status", JOptionPane.PLAIN_MESSAGE);
     }
 }
-
 
