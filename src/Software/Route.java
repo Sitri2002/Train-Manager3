@@ -3,8 +3,9 @@ package Software;
 import java.util.ArrayList;
 import People.*;
 import Hardware.*;
+import java.io.Serializable;
 
-public class Route {
+public class Route implements Serializable{
 	private String startingLocation;
 	private String endLocation;
 	private int departureTime;

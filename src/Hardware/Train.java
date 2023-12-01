@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
 import java.util.Map;
+import java.io.Serializable;
 import People.*;
 import Software.*;
 
-public class Train {
+public class Train implements Serializable{
 
 	private int trainCode;
 	private int[] seatTiers;
