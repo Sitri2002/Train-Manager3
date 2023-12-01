@@ -1,15 +1,24 @@
 package Software;
 
 import javax.swing.*;
+
+import People.Manager;
+import People.Passenger;
+import People.Person;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.RGBImageFilter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.awt.image.FilteredImageSource;
 
 public class MainGUI extends JFrame {
-
+	
     public MainGUI() {
         setTitle("WILDCAT RAILWAY");
         setSize(1000, 700);
@@ -38,7 +47,6 @@ public class MainGUI extends JFrame {
         imagePanel.add(bottomLeftLabel, BorderLayout.WEST);
 
         // Adding wildcat Logo to the right
-        // fix image link
         ImageIcon bottomRightGraphic = createImageIcon("wildcatLogo.png");
         ImageIcon modifiedIcon2 = makeWhitePixelsTransparent(bottomRightGraphic);
         JLabel bottomRightLabel = new JLabel(modifiedIcon2);
@@ -82,6 +90,7 @@ public class MainGUI extends JFrame {
 
         return new ImageIcon(modifiedImage);
     }
+
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -95,10 +104,12 @@ public class MainGUI extends JFrame {
 }
 
 class LoginPanel extends JPanel {
-
+	private ArrayList<Person> people_list = new ArrayList<Person>();
+	private Person loggedin;
     private JTextField usernameField;
     private JPasswordField passwordField;
 
+    
     public LoginPanel() {
         setLayout(new BorderLayout());
         setOpaque(false);
@@ -176,6 +187,14 @@ class LoginPanel extends JPanel {
 
         if (isValidLogin(username, new String(password))) {
             JOptionPane.showMessageDialog(this, "Login Successful");
+            if(loggedin instanceof Passenger) {
+            	PassengerMainMenu();
+            } 
+            else if (loggedin instanceof Manager) {
+            	ManagerMainMenu();
+            }
+            SwingUtilities.getWindowAncestor(this).dispose();
+            
         } else {
             JOptionPane.showMessageDialog(this, "Login Failed");
         }
@@ -183,12 +202,148 @@ class LoginPanel extends JPanel {
 
     private void createAccount() {
     	// replace me with actual logic
-        JOptionPane.showMessageDialog(this, "Create Account functionality not implemented yet.");
-    }
+        // JOptionPane.showMessageDialog(this, "Create Account functionality not implemented yet.");
+    	String[] items = {"Passenger", "Manager"};
 
+        // Create a JComboBox with the array of items
+        JComboBox<String> comboBox = new JComboBox<>(items);
+
+        // Create a custom JPanel to hold the JComboBox
+        JPanel create_account_panel = new JPanel(new GridLayout(5,1));
+        create_account_panel.add(new JLabel("Select account type:"));
+        create_account_panel.add(comboBox);
+
+        JTextField username = new JTextField(); JPasswordField password = new JPasswordField(); JTextField name = new JTextField(); JTextField email = new JTextField(); ;
+        
+        JLabel namelabel = new JLabel("Name:");
+        create_account_panel.add(namelabel);
+        create_account_panel.add(name);
+        
+        JLabel userlabel = new JLabel("Username:");
+        create_account_panel.add(userlabel);
+        create_account_panel.add(username);
+        
+        JLabel passwordlabel = new JLabel("Password:");
+        create_account_panel.add(passwordlabel);
+        create_account_panel.add(password);
+        
+        JLabel emaillabel = new JLabel("Email:");
+        create_account_panel.add(emaillabel);
+        create_account_panel.add(email);
+        
+        // Show the JOptionPane with the custom panel
+        int result = JOptionPane.showOptionDialog(null, create_account_panel, "Create New Account",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
+
+        String username_str = username.getText(); char[] password_char = password.getPassword(); String name_str = name.getText(); String email_str = email.getText();
+        String password_str = String.valueOf(password_char);
+        
+        // Check the result when OK is clicked
+        if (result == JOptionPane.OK_OPTION) {
+            String selectedValue = (String) comboBox.getSelectedItem();
+            if(selectedValue.equals("Passenger")) {
+            	Passenger p = new Passenger();
+            	p.setName(name_str); p.setUsername(username_str); p.setPassword(password_str); p.setEmail(email_str);
+            	people_list.add(p);
+            	
+            	Passenger.saveData(people_list);
+            	
+            	JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+            }
+            else if(selectedValue.equals("Manager")) {
+            	Manager m = new Manager();
+            	m.setName(name_str); m.setUsername(username_str); m.setPassword(password_str); m.setEmail(email_str);
+            	people_list.add(m);
+            	
+            	Manager.saveData(people_list);
+            	
+            	JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+            }
+        }
+    }
+   
     private boolean isValidLogin(String username, String password) {
         // replace me with actual logic
         // stupid hardcoded example
-        return username.equals("user") && password.equals("123");
+    	people_list = Person.loadData();
+    	
+    	for(int i = 0; i < people_list.size(); i++) {
+    		if(people_list.get(i).getUsername().equals(username) && people_list.get(i).getPassword().equals(password)) {
+    			loggedin = people_list.get(i);
+    			return true;
+    		}
+    	}
+    	return false; // default case
+    }
+    
+    private void PassengerMainMenu() {
+    	JFrame main_menu = new JFrame("Train Reservation System");
+
+        main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        main_menu.setSize(1000, 700);
+        main_menu.setLocationRelativeTo(null);
+
+        JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        main_menu.setContentPane(pane1);
+        
+        pane1.setBackground(new Color(173, 216, 230));
+        
+        JLabel biglabel = new JLabel("  WELCOME, " + loggedin.getName().toUpperCase() + "!");
+        biglabel.setFont(new Font("Arial", Font.ITALIC, 30));
+        biglabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        pane1.add(biglabel, BorderLayout.NORTH);
+
+        main_menu.setVisible(true);
+        
+        main_menu.setContentPane(pane1);
+        
+        JButton view_train_button = new JButton("View available trains");
+        JButton book_train_button = new JButton("Book a train");
+        JButton view_booking_button = new JButton("View bookings");
+        
+        view_train_button.setPreferredSize(new Dimension(200, 40));
+        book_train_button.setPreferredSize(new Dimension(200, 40));
+        view_booking_button.setPreferredSize(new Dimension(200, 40));
+        
+        pane1.add(view_train_button);
+        pane1.add(book_train_button);
+        pane1.add(view_booking_button);
+    }
+    
+    private void ManagerMainMenu() {
+    	JFrame main_menu = new JFrame("Train Reservation System");
+
+        main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        main_menu.setSize(1000, 700);
+        main_menu.setLocationRelativeTo(null);
+
+        JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        main_menu.setContentPane(pane1);
+        
+        pane1.setBackground(new Color(173, 216, 230));
+        
+        JLabel biglabel = new JLabel("  WELCOME, " + loggedin.getName().toUpperCase() + "!");
+        biglabel.setFont(new Font("Arial", Font.ITALIC, 30));
+        biglabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        pane1.add(biglabel, BorderLayout.NORTH);
+
+        main_menu.setVisible(true);
+        
+        main_menu.setContentPane(pane1);
+        
+        JButton manage_train = new JButton("Manage trains");
+        JButton cancel_train = new JButton("Cancel a train");
+        JButton create_new_train = new JButton("Create a new train");
+        
+        manage_train.setPreferredSize(new Dimension(200, 40));
+        cancel_train.setPreferredSize(new Dimension(200, 40));
+        create_new_train.setPreferredSize(new Dimension(200, 40));
+        
+        pane1.add(manage_train);
+        pane1.add(cancel_train);
+        pane1.add(create_new_train);
     }
 }
+
+
