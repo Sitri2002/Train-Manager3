@@ -337,14 +337,17 @@ class LoginPanel extends JPanel {
         JButton manage_train = new JButton("Manage trains");
         JButton cancel_train = new JButton("Cancel a train");
         JButton create_new_train = new JButton("Create a new train");
+        JButton logout = new JButton("Log out");
         
         manage_train.setPreferredSize(new Dimension(200, 40));
         cancel_train.setPreferredSize(new Dimension(200, 40));
         create_new_train.setPreferredSize(new Dimension(200, 40));
+        logout.setPreferredSize(new Dimension(200, 40));
         
         pane1.add(manage_train);
         pane1.add(cancel_train);
         pane1.add(create_new_train);
+        pane1.add(logout);
         
         manage_train.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -364,7 +367,21 @@ class LoginPanel extends JPanel {
             }
         });
         
+        logout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	logout(logout);
+            }
+        });
     }
+    
+    private void logout(JButton logoutbutton) {
+    	JFrame mainMenuFrame = (JFrame) SwingUtilities.getRoot(logoutbutton);
+        mainMenuFrame.dispose();
+        
+        MainGUI maingui = new MainGUI();
+        maingui.setVisible(true);
+    }
+    
     private void create_train() {
     	JTextField traincode = new JTextField();
 		
@@ -423,39 +440,24 @@ class LoginPanel extends JPanel {
 
     private void manage_train() {
     	// implement later
-    	JTextField traincode = new JTextField();
-		
-		Object[] inputFields = {"Enter the train code you would like to manage:", traincode};
-		
-		int option = JOptionPane.showConfirmDialog(null, inputFields, "Manage Train", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		
-		String code_str = traincode.getText();
-		
+    	ArrayList<String> options = new ArrayList<String>();
+    	
+    	if(data1.get_trains().size() == 0) {
+    		JOptionPane.showMessageDialog(null, "There are currently no trains", "Error", JOptionPane.ERROR_MESSAGE);
+    		return;
+    	}
+    	
+    	for(int i = 0; i < data1.get_trains().size(); i++) {
+    		options.add("Train " + data1.get_trains().get(i).getTrainCode());
+    	}
+    	String[] option_str = options.toArray(new String[0]);
+    	JComboBox<String> combobox = new JComboBox<>(option_str);
+    	
+    	int option = JOptionPane.showConfirmDialog(null, combobox, "Pick Train", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	int selectedValue = (int)combobox.getSelectedIndex(); // index starts at 0
+    	
 		if (option == JOptionPane.OK_OPTION) {
-			if(Integer.valueOf(code_str) < 0) {
-				String error_message = "Train code must 0 or greater";
-				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			else {
-				int index = -1;
-				for(int i = 0; i < data1.get_trains().size(); i++) {
-					if (data1.get_trains().get(i).getTrainCode() == Integer.valueOf(code_str)) {
-						index = i;
-					}
-				}
-				
-				if(index == -1) {
-					String error_msg = "Train " + code_str + " does not exist";
-					JOptionPane.showMessageDialog(null, error_msg, "Error", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				else {
-					String success_msg = "Found train " + code_str;
-					JOptionPane.showMessageDialog(null, success_msg, "Success", JOptionPane.PLAIN_MESSAGE);
-					ManageTrainPanel(data1.get_trains().get(index));
-				}	
-			}
+			ManageTrainPanel(data1.get_trains().get(selectedValue));
 		}
     }
     public void ManageTrainPanel(Train t) {
@@ -474,16 +476,16 @@ class LoginPanel extends JPanel {
         JButton update_status = new JButton("Update status");
         JButton set_ticket_price = new JButton("Set ticket price");
         JButton manage_passengers = new JButton("Manage passengers");
-        JButton change_ticket_price = new JButton("Change ticket price");
+        JButton create_route = new JButton("Create route");
         JButton view_train_status = new JButton("View train status");
         
         update_status.setPreferredSize(new Dimension(200, 40));
         set_ticket_price.setPreferredSize(new Dimension(200, 40));
         manage_passengers.setPreferredSize(new Dimension(200, 40));
-        change_ticket_price.setPreferredSize(new Dimension(200, 40));
+        create_route.setPreferredSize(new Dimension(200, 40));
         view_train_status.setPreferredSize(new Dimension(200, 40));
         
-        pane1.add(update_status); pane1.add(set_ticket_price); pane1.add(manage_passengers); pane1.add(change_ticket_price); pane1.add(view_train_status);
+        pane1.add(update_status); pane1.add(set_ticket_price); pane1.add(manage_passengers); pane1.add(create_route); pane1.add(view_train_status);
         
         update_status.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -503,9 +505,9 @@ class LoginPanel extends JPanel {
             }
         });
         
-        change_ticket_price.addActionListener(new ActionListener() {
+        create_route.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	change_ticket_price(t);
+            	create_route(t);
             }
         });
         
@@ -519,23 +521,127 @@ class LoginPanel extends JPanel {
 	}
     
     private void update_status(Train t) {
-    	
+    	JTextField trainstatus = new JTextField();
+		
+		Object[] inputFields = {"New train status:", trainstatus};
+		
+		int option = JOptionPane.showConfirmDialog(null, inputFields, "Create Train", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		String status_str = trainstatus.getText();
+		
+		
+		if (option == JOptionPane.OK_OPTION) {
+			if(status_str.equals("")) {
+				JOptionPane.showMessageDialog(null, "Empty input for status", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				t.setStatus(status_str);
+				JOptionPane.showMessageDialog(null, "Successfully changed status for train " + t.getTrainCode(), "Success", JOptionPane.PLAIN_MESSAGE);
+			}
+		}
     }
     
     private void set_ticket_price(Train t) {
+    	//ArrayList<String>options = new ArrayList<String>();
+    	ArrayList<String> options = new ArrayList<String>();
     	
+    	if(t.getRouteList().size() == 0) {
+    		JOptionPane.showMessageDialog(null, "There are currently no routes for this train", "Error", JOptionPane.ERROR_MESSAGE);
+    		return;
+    	}
+    	
+    	for(int i = 0; i < t.getRouteList().size(); i++) {
+    		options.add(t.getRouteList().get(i).getStartLocation() + "->" + t.getRouteList().get(i).getEndLocation());
+    	}
+    	String[] option_str = options.toArray(new String[0]);
+    	JComboBox<String> combobox = new JComboBox<>(option_str);
+    	
+    	int option = JOptionPane.showConfirmDialog(null, combobox, "Pick Route", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	int selectedValue = (int)combobox.getSelectedIndex(); // index starts at 0
+    	
+    	JTextField newprice = new JTextField();
+    	Object[] input_field = {"Price for " +  t.getRouteList().get(selectedValue).getStartLocation() + "->" + t.getRouteList().get(selectedValue).getEndLocation() + ": ", newprice};
+    	int price_choice = JOptionPane.showConfirmDialog(null, input_field, "Set Ticket Price", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	
+    	System.out.println("$" + newprice.getText());
+    	t.getRouteList().get(selectedValue).setPrice(Integer.valueOf(newprice.getText()));
+    	JOptionPane.showMessageDialog(null, "Successfully set the ticket price to $" + newprice.getText(), "Success", JOptionPane.PLAIN_MESSAGE);
     }
     
     private void manage_passengers(Train t) {
+    	// adding passenger for testing because there is currently no logout feature
+    	Passenger p = new Passenger();
+    	p.setName("REMOVE LATER");
+    	t.addPassenger(p);
     	
+    	
+    	// show number of passengers and give ability to remove passenger
+    	ArrayList<String> options = new ArrayList<String>();
+    	
+    	if(t.getPassengers().size() == 0) {
+    		JOptionPane.showMessageDialog(null, "There are currently no passengers on this train", "Error", JOptionPane.ERROR_MESSAGE);
+    		return;
+    	}
+    	
+    	for(int i = 0; i < t.getPassengers().size(); i++) {
+    		options.add(t.getPassengers().get(i).getName());
+    	}
+    	String[] option_str = options.toArray(new String[0]);
+    	JComboBox<String> combobox = new JComboBox<>(option_str);
+    	
+    	int option = JOptionPane.showConfirmDialog(null, combobox, "Pick Passenger", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	int selectedValue = (int)combobox.getSelectedIndex(); // index starts at 0
+    	
+    	// passenger name:
+    	// passenger route:
+    	// passenger seat:
+    	String route_msg;
+    	if (t.getRouteList().size() == 0) {
+    		route_msg = "No route booked";
+    	}
+    	else {
+    		route_msg = t.getPassengers().get(selectedValue).getBookedRoute().getStartLocation() + "->" + t.getPassengers().get(selectedValue).getBookedRoute().getEndLocation();
+    	}
+    	
+    	String passenger_msg = "Name: " + t.getPassengers().get(selectedValue).getName() + "\nRoute: " + route_msg + "\nSeat: NOT IMPLEMENTED";
+    
+    	JOptionPane.showMessageDialog(null, passenger_msg, "Passenger " + t.getPassengers().get(selectedValue).getName() + " Info", JOptionPane.PLAIN_MESSAGE);
     }
     
-    private void change_ticket_price(Train t) {
-    	
+    private void create_route(Train t) {
+    	JTextField start_loc = new JTextField();
+    	JTextField end_loc = new JTextField();
+    	JTextField departtime = new JTextField();
+    	JTextField arrivetime = new JTextField();
+    	JTextField price = new JTextField();
+		
+		Object[] inputFields = {"Start Location:", start_loc, "End Location", end_loc, "Depart Time:", departtime, "Arrival Time:", arrivetime, "Price ($):", price};
+		
+		int option = JOptionPane.showConfirmDialog(null, inputFields, "Create Route", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+		
+		String start_str = start_loc.getText(); String end_str = end_loc.getText(); String depart_str = departtime.getText(); String arrive_str = arrivetime.getText(); String price_str = price.getText();
+		
+		if (option == JOptionPane.OK_OPTION) {
+			if(start_str.equals("") || end_str.equals("") || depart_str.equals("") || arrive_str.equals("") || price_str.equals("")) {
+				JOptionPane.showMessageDialog(null, "Empty input for status", "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				Route r = new Route();
+				r.setStartLocation(start_str);
+				r.setEndLocation(end_str);
+				r.setDepartureTime(Integer.valueOf(depart_str));
+				r.setArrivalTime(Integer.valueOf(arrive_str));
+				r.setPrice(Integer.valueOf(price_str));
+				
+				t.addRoute(r);
+			}
+		}
     }
     
     private void view_train_status(Train t) {
-    	JOptionPane.showMessageDialog(null, "Train " + t.getTrainCode() + " is " + t.getStatus(), "Train Status", JOptionPane.PLAIN_MESSAGE);
+    	JOptionPane.showMessageDialog(null, "Train " + t.getTrainCode() + " is \"" + t.getStatus() + "\"", "Train Status", JOptionPane.PLAIN_MESSAGE);
     }
 }
 

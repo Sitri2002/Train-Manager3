@@ -2,8 +2,9 @@ package Software;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import People.Passenger;
 import People.*;
-import Hardware.*;
 
 public class Route implements Serializable {
 	private String startingLocation;
@@ -82,6 +83,11 @@ public class Route implements Serializable {
 		System.out.println("The duration of this route is " + (duration/100) + " hours");
 		
 		return duration;
+	}
+	
+	public void printRoute() {
+		System.out.println(this.getStartLocation() + " -> " + this.getEndLocation() + "\t\tDeparting at: " + this.getDepatureTime() + "\t\tArriving at: " + this.getDepatureTime());
+		
 	}
 
 }
