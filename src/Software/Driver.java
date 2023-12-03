@@ -1,9 +1,7 @@
 package Software;
 
-import People.*;
-
-
 import Hardware.*;
+import People.*;
 
 public class Driver {
 	
@@ -26,23 +24,11 @@ public class Driver {
 		
 		// create a new route
 		Route route1 = m1.createRoute("TUS", "PHX", 1500, 1700, 10);
-		Route route2 = m1.createRoute("PHX", "NY", 1800, 2300, 10);
-		Route route3 = m1.createRoute("NY", "CHI", 2400, 500, 10);
-		Route route4 = m1.createRoute("CHI", "TUS", 500, 1800, 10);
 		Train t1 = m1.createTrain(1830);
-		System.out.println("Testing route add/removal validity:");
 		m1.addRouteToTrain(t1, route1);
-		m1.addRouteToTrain(t1, route2);
-		m1.addRouteToTrain(t1, route3);
-		m1.addRouteToTrain(t1, route4);
-		t1.removeRoute(route4);
-		t1.removeRoute(route2);
-		System.out.println("");
-		System.out.println("View available trains in the station:");
+		
 		m1.viewTrains();
-		System.out.println("");
-		System.out.println("Train 1 schedule:");
-		t1.printSchedule();
+		
 		String passenger1_name="Passenger1";
 		String passenger1_password="passeng";
 		String passenger1_username="user1";
@@ -56,7 +42,7 @@ public class Driver {
 		p1.setEmail(passenger1_email);
 		
 		p1.bookTrain(t1, t1.getRouteList().get(0));
-		System.out.println("");
+		
 		System.out.println("Printing the booking details for p1:");
 		
 		p1.viewBooking();
@@ -74,23 +60,31 @@ public class Driver {
 		p2.setEmail(passenger2_email);
 		
 		p2.bookTrain(t1, t1.getRouteList().get(0));
-		System.out.println("");
+		
 		System.out.println("Printing passengers:");
 		t1.printPassengers();
 		
 		p1.cancelBooking(t1);
-		System.out.println("");
+		
 		System.out.println("Checking if the booking for p1 has been cancelled:");
 		p1.viewBooking();
-		System.out.println("");
+		
 		System.out.println("Printing passengers after p1 cancelled:");
 		t1.printPassengers();
-		System.out.println("");
+		
 		System.out.println("Printing the duration for the t1 route: ");
 		t1.getRouteList().get(0).getDuration();
-		System.out.println("");
-		System.out.println("Route available to passengers: ");
-		p1.viewRoutes(m1.getRouteList());
+		
+		System.out.println("Updating the t1 route");
+		m1.updateRoute(route1, "NYC", "BOS", 1100, 1400, 20);
+		System.out.println("Updated t1 route: ");
+		t1.printRouteList();
+		
+		System.out.println("t1 passengers:");
+		t1.printPassengers();
+		
+		System.out.println("Viewing train statuses");
+		m1.viewTrains();
 		
 	}
 }

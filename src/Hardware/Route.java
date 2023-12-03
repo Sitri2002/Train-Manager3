@@ -1,4 +1,4 @@
-package Software;
+package Hardware;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -85,8 +85,8 @@ public class Route implements Serializable {
 		return duration;
 	}
 	
-	public void printRoute() {
-		System.out.println(this.getStartLocation() + " -> " + this.getEndLocation() + "\t\tDeparting at: " + this.getDepatureTime() + "\t\tArriving at: " + this.getDepatureTime());
+	public String printRoute() {
+		return(this.getStartLocation() + " -> " + this.getEndLocation() + " \t\tDeparting at: " + this.getDepatureTime() + " \t\tArriving at: " + this.getArrivalTime());
 		
 	}
 

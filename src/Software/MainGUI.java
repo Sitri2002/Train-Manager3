@@ -2,25 +2,31 @@ package Software;
 
 import javax.swing.*;
 
+import Hardware.Route;
+import Hardware.Train;
 import People.Manager;
 import People.Passenger;
 import People.Person;
-import Hardware.Train;
 import Software.Data;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.RGBImageFilter;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.awt.image.FilteredImageSource;
 
 public class MainGUI extends JFrame {
+	
     public MainGUI() {
+    	
         setTitle("WILDCAT RAILWAY");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,13 +112,33 @@ public class MainGUI extends JFrame {
 
 class LoginPanel extends JPanel {
 	private Data data1 = new Data();
-	private ArrayList<Person> people_list = new ArrayList<Person>();
+	public ArrayList<Person> people_list = new ArrayList<Person>();
+	public ArrayList<Passenger> passenger_list = new ArrayList<Passenger>();
+	public ArrayList<Manager> manager_list = new ArrayList<Manager>();
 	private Person loggedin;
     private JTextField usernameField;
     private JPasswordField passwordField;
-    
+	public Manager m1 = new Manager();
+
     
     public LoginPanel() {
+    	// initializing m1 to test - can change to a driver that we pass into the GUI file or from data.java
+    	m1.createTrain(113);
+    	m1.createTrain(227);
+    	m1.createTrain(331);
+    	m1.createRoute("Bend", "Portland", 1700, 1930, 45);
+    	m1.addRouteToTrain(m1.getTrainsManaged().get(0), 
+    	    	m1.createRoute("Tucson", "Pheonix", 1200, 1400, 40));
+    	m1.addRouteToTrain(m1.getTrainsManaged().get(1), 
+    	    	m1.createRoute("Tucson", "Pheonix", 1200, 1400, 40));
+    	m1.addRouteToTrain(m1.getTrainsManaged().get(2), 
+    	    	m1.createRoute("Tucson", "Pheonix", 1200, 1400, 40));
+    	m1.addRouteToTrain(m1.getTrainsManaged().get(0), m1.createRoute("Bend", "Portland", 1700, 1930, 45));
+    	m1.addRouteToTrain(m1.getTrainsManaged().get(0), m1.createRoute("Bend", "Portland", 1300, 1430, 45));
+    	m1.addRouteToTrain(m1.getTrainsManaged().get(0), m1.createRoute("Bend", "Portland", 900, 1100, 45));
+    	
+    	manager_list.add(m1);
+    	
         setLayout(new BorderLayout());
         setOpaque(false);
 
@@ -170,7 +196,7 @@ class LoginPanel extends JPanel {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                login();
+                login(m1);
             }
         });
 
@@ -183,14 +209,14 @@ class LoginPanel extends JPanel {
     }
 
 
-    private void login() {
+    private void login(Manager m) {
         String username = usernameField.getText();
         char[] password = passwordField.getPassword();
 
         if (isValidLogin(username, new String(password))) {
             JOptionPane.showMessageDialog(this, "Login Successful");
             if(loggedin instanceof Passenger) {
-            	PassengerMainMenu();
+            	PassengerMainMenu(m, username);
             } 
             else if (loggedin instanceof Manager) {
             	ManagerMainMenu();
@@ -203,7 +229,6 @@ class LoginPanel extends JPanel {
     }
 
     private void createAccount() {
-    	// replace me with actual logic
         // JOptionPane.showMessageDialog(this, "Create Account functionality not implemented yet.");
     	String[] items = {"Passenger", "Manager"};
 
@@ -246,6 +271,7 @@ class LoginPanel extends JPanel {
             	Passenger p = new Passenger();
             	p.setName(name_str); p.setUsername(username_str); p.setPassword(password_str); p.setEmail(email_str);
             	people_list.add(p);
+            	passenger_list.add(p);
             	
             	Passenger.saveData(people_list);
             	
@@ -255,6 +281,7 @@ class LoginPanel extends JPanel {
             	Manager m = new Manager();
             	m.setName(name_str); m.setUsername(username_str); m.setPassword(password_str); m.setEmail(email_str);
             	people_list.add(m);
+            	manager_list.add(m);
             	
             	Manager.saveData(people_list);
             	
@@ -264,8 +291,6 @@ class LoginPanel extends JPanel {
     }
    
     private boolean isValidLogin(String username, String password) {
-        // replace me with actual logic
-        // stupid hardcoded example
     	people_list = Person.loadData();
     	
     	for(int i = 0; i < people_list.size(); i++) {
@@ -277,7 +302,8 @@ class LoginPanel extends JPanel {
     	return false; // default case
     }
     
-    private void PassengerMainMenu() {
+    //Passenger main menu stuff
+    private void PassengerMainMenu(Manager m, String name) {
     	JFrame main_menu = new JFrame("Train Reservation System");
 
         main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -302,16 +328,254 @@ class LoginPanel extends JPanel {
         JButton view_train_button = new JButton("View available trains");
         JButton book_train_button = new JButton("Book a train");
         JButton view_booking_button = new JButton("View bookings");
+        JButton cancel_button = new JButton("Cancel bookings");
         
         view_train_button.setPreferredSize(new Dimension(200, 40));
         book_train_button.setPreferredSize(new Dimension(200, 40));
         view_booking_button.setPreferredSize(new Dimension(200, 40));
+        cancel_button.setPreferredSize(new Dimension(200, 40));
         
         pane1.add(view_train_button);
         pane1.add(book_train_button);
         pane1.add(view_booking_button);
+        pane1.add(cancel_button);
+        
+        view_train_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewAvailableTrains(m, name);      // Call your function
+            }
+        });
+
+        book_train_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	bookATrain(name);
+            }
+        });
+
+        view_booking_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	viewBookings(name);
+            }
+        });
+        
+        cancel_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	cancelBooking(name);
+            }
+        });
     }
     
+    private void viewAvailableTrains(Manager m, String name) {
+    	redirectToGUI();
+    	System.out.println("Viewing available trains... ");
+    	m.viewTrains();
+    }
+    
+    private void bookATrain(String name) {
+    	System.out.println("Book a Train...");
+    	Passenger p = findPassenger(name);
+    	if(p == null) {
+    		JOptionPane.showMessageDialog(null,
+    				"Something went wrong...",
+					"Error booking a train",
+					JOptionPane.ERROR_MESSAGE);
+    	}
+    	if(p.getbookedTrain() != null) {
+    		JOptionPane.showMessageDialog(null,
+    				"You already have a train booked.",
+					"Train already booked",
+					JOptionPane.ERROR_MESSAGE);
+    	}
+    	else if(p != null) {
+    		JPanel destinationPanel = new JPanel(new GridLayout(2, 2));
+    				
+    		JLabel startDestLabel = new JLabel("Enter desired start destination: ");
+    		JTextField startDestField = new JTextField();
+    		
+    		JLabel endDestLabel = new JLabel("Enter desired end destination: ");
+    		JTextField endDestField = new JTextField();
+    		
+    		destinationPanel.add(startDestLabel);
+    		destinationPanel.add(startDestField);
+    		
+    		destinationPanel.add(endDestLabel);
+    		destinationPanel.add(endDestField);
+    		
+    		int result = JOptionPane.showConfirmDialog(null, destinationPanel, "Book a Train", JOptionPane.OK_CANCEL_OPTION);
+
+	        if (result == JOptionPane.OK_OPTION) {
+	        	
+	        	if (isEmpty(startDestField) || isEmpty(endDestField)){
+	                JOptionPane.showMessageDialog(null, "Error: User input cannot be empty", "Input Error", JOptionPane.ERROR_MESSAGE);
+	            }
+	        	
+	        	else {
+		        String departure = startDestField.getText();
+	            String destination = endDestField.getText();
+	            
+	            JFrame frame = new JFrame("Route Selection");
+		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		        frame.setSize(400, 300);
+		        frame.setLayout(new BorderLayout());
+		        frame.setLocationRelativeTo(null);
+		        
+		        // Create a panel to display the list of routes
+		        JPanel routePanel = new JPanel();
+		        routePanel.setLayout(new BoxLayout(routePanel, BoxLayout.Y_AXIS));
+		        
+		        if(!isThereRouteAvailable(departure, destination)) {
+		        	JOptionPane.showMessageDialog(null,
+		    				"Sorry, there is no routes available from " + departure + " to " + destination + " at this time.",
+							"No available routes",
+							JOptionPane.ERROR_MESSAGE);
+		        }
+		        else {
+	            	for(Train t : m1.getTrainsManaged()) {
+	            		for(Route r : t.getRouteList()) {
+	            			if(r.getStartLocation().equalsIgnoreCase(departure) && r.getEndLocation().equalsIgnoreCase(destination))  {
+	            		      
+	            				// Populate the panel with route entries
+	            			            JPanel routeEntryPanel = new JPanel(new BorderLayout());
+	            			            JLabel routeLabel = new JLabel(r.printRoute());
+	            			            JButton selectButton = new JButton("Select");
+	            			            selectButton.addActionListener(new ActionListener() {
+	            			                @Override
+	            			                public void actionPerformed(ActionEvent e) {
+	            			                    showConfirmationGUI(r, p, t);
+	            			                }
+	            			            }); 
+
+	            			            routeEntryPanel.add(routeLabel, BorderLayout.CENTER);
+	            			            routeEntryPanel.add(selectButton, BorderLayout.EAST);
+	            			            routePanel.add(routeEntryPanel);
+	            			            
+	            					}
+	            			    }
+
+	            			}
+	            	// Add the route panel to a scroll pane
+			        JScrollPane scrollPane = new JScrollPane(routePanel);
+
+			        frame.add(scrollPane, BorderLayout.CENTER);
+			        frame.setVisible(true);
+	            		}
+	        		}
+	            	}
+	            	
+	        	}
+    }
+    
+    private Boolean isThereRouteAvailable(String dep, String dest) {
+    	for(Train t : m1.getTrainsManaged()) {
+    		for(Route r : t.getRouteList()) {
+    			if(r.getStartLocation().equalsIgnoreCase(dep) && r.getEndLocation().equalsIgnoreCase(dest))  {
+    				return true;
+    			}
+    		}
+    	}
+    		      return false;
+    }
+    
+    private void cancelBooking(String name) {
+    	Passenger p = findPassenger(name);
+    	Train t = p.getbookedTrain();
+    	
+    	if(t == null) {
+    		
+    	}
+    	
+    	else {
+    		   JFrame frame = new JFrame("Booking Cancellation Confirmation");
+    	        frame.setSize(400, 200);
+    	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    	        JPanel panel = new JPanel();
+    	        JLabel messageLabel = new JLabel("Are you sure you want to cancel your booking?");
+    	        JButton yesButton = new JButton("Yes");
+    	        JButton noButton = new JButton("No");
+
+    	        yesButton.addActionListener(new ActionListener() {
+    	            @Override
+    	            public void actionPerformed(ActionEvent e) {
+    	            	p.cancelBooking(t);
+    	                JOptionPane.showMessageDialog(null, "Booking canceled!");
+    	                frame.dispose();
+    	            }
+    	        });
+
+    	        noButton.addActionListener(new ActionListener() {
+    	            @Override
+    	            public void actionPerformed(ActionEvent e) {
+    	            	JOptionPane.showMessageDialog(null, "Booking not cancelled.");
+    	                frame.dispose();
+    	            }
+    	        });
+
+    	        panel.add(messageLabel);
+    	        panel.add(yesButton);
+    	        panel.add(noButton);
+
+    	        frame.getContentPane().add(panel);
+    	        frame.setLocationRelativeTo(null);
+    	        frame.setVisible(true);
+    	    }
+    }
+
+	private void showConfirmationGUI(Route selectedRoute, Passenger passenger, Train t) {
+	    JFrame confirmationFrame = new JFrame("Confirmation");
+	    confirmationFrame.setSize(300, 150);
+	    confirmationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    confirmationFrame.setLayout(new BorderLayout());
+	
+	    JLabel confirmationLabel = new JLabel("Selected Route: " + selectedRoute.printRoute());
+	    JButton okButton = new JButton("OK");
+	    okButton.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            // Perform actions on confirmation if needed
+	            JOptionPane.showMessageDialog(null, "Train booked successfully");
+	            confirmationFrame.dispose();
+	            passenger.bookTrain(t, selectedRoute);
+	        }
+	    });
+	
+	    confirmationFrame.add(confirmationLabel, BorderLayout.CENTER);
+	    confirmationFrame.add(okButton, BorderLayout.SOUTH);
+	    confirmationFrame.setLocationRelativeTo(null);
+	    confirmationFrame.setVisible(true);
+	}
+    	
+	private static boolean isEmpty(JTextField textField) {
+        return textField.getText().trim().isEmpty();
+    }
+    
+    private void viewBookings(String name) {
+    	Passenger p = findPassenger(name);
+    	if (p == null){
+    		JOptionPane.showMessageDialog(null,
+    				"Something went wrong...",
+					"Error viewing bookings",
+					JOptionPane.ERROR_MESSAGE);
+    	}
+    	else if (p.getbookedTrain() == null){
+    		JOptionPane.showMessageDialog(null,
+    				"You have no current bookings.\n",
+					"No bookings",
+					JOptionPane.ERROR_MESSAGE);
+    	}
+    	else if(p != null) {
+    		redirectToGUI();
+        	System.out.println("Viewing bookings...");
+    		p.viewBooking();
+    	}
+    }
+    //passenger menu stuff ends
+    
+    // Manager train menu stuff
     private void ManagerMainMenu() {
     	JFrame main_menu = new JFrame("Train Reservation System");
     	setLayout(new BorderLayout());
@@ -681,5 +945,71 @@ class LoginPanel extends JPanel {
     private void view_train_status(Train t) {
     	JOptionPane.showMessageDialog(null, "Train " + t.getTrainCode() + " is \"" + t.getStatus() + "\"", "Train Status", JOptionPane.PLAIN_MESSAGE);
     }
+    //Manager page stuff ends
+    
+    // Utility functions
+    private Passenger findPassenger(String name) {
+    	for(Passenger p : passenger_list) {
+    		if(p.getName().equalsIgnoreCase(name)) {
+    			return p;
+    		}
+    	}
+    	return null;
+    }
+    
+    private Train findTrain(Manager m, int trainCode) {
+    	for(Train t : m.getTrainsManaged()) {
+    		if(t.getTrainCode() == trainCode) {
+    			return t;
+    		}
+    	}
+		return null;
+    }
+    
+   private Route findRoute(Manager m, String dep, String des) {
+    	for(Train t : m.getTrainsManaged()) {
+    		for(Route r : t.getRouteList()) {
+    			if(r.getStartLocation().equalsIgnoreCase(dep) && r.getEndLocation().equalsIgnoreCase(des));
+    				return r;
+    		}
+    	}
+    	return null;
+    }
+    
+    private void redirectToGUI() {
+    	JFrame window = new JFrame("Viewing Available Trains");
+    	window.setSize(700,800);
+    	window.setVisible(true);
+    	window.setLocationRelativeTo(null);
+    	window.setBackground(new Color(173, 216, 230));
+    	
+    	JTextArea outputTextArea = new JTextArea();
+       
+    	PrintStream printStream = new PrintStream(new CustomOutputStream(outputTextArea));
+        System.setOut(printStream);
+    	
+    	outputTextArea.setEditable(false);
+        outputTextArea.setBackground(new Color(173, 216, 230));
+        
+        window.setLayout(new BorderLayout());
+        window.add(new JScrollPane(outputTextArea), BorderLayout.CENTER);
+        window.setSize(700, 800);
+        window.setVisible(true);
+    }
+    
+	class CustomOutputStream extends OutputStream {
+	    private JTextArea textArea;
+
+	    public CustomOutputStream(JTextArea textArea) {
+	        this.textArea = textArea;
+	    }
+
+	    @Override
+	    public void write(int b) throws IOException {
+	        textArea.append(String.valueOf((char) b));
+	        textArea.setCaretPosition(textArea.getDocument().getLength());
+	    }
+	}
 }
+
 

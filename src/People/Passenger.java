@@ -1,9 +1,7 @@
 package People;
-import Software.*;
 
-import java.util.ArrayList;
-
-import Hardware.*;
+import Hardware.Route;
+import Hardware.Train;
 
 public class Passenger extends Person {
 	private Train bookedTrain;
@@ -41,17 +39,12 @@ public class Passenger extends Person {
 		this.bookedTrain = train;
 	}
 
-	public void viewRoutes(ArrayList<Route> routeList) {
-		System.out.println("All current routes you can book: ");
-		routeList.sort((o1, o2) -> Integer.compare(o1.getDepatureTime(),o2.getDepatureTime()));
-		for (Route route : routeList) {
-			System.out.println("Route " + route.getStartLocation() + "-" + route.getEndLocation() + " Departure: " + route.getDepatureTime() + " - Arrival: " + route.getArrivalTime());
-		}
+	public void viewTrains() {
+		
 	}
 	
 	public void viewTrainStatus() {
-		System.out.println("Booked train status: "); 
-		bookedTrain.printSchedule();
+		
 	}
 	
 	public void bookTrain(Train train, Route route) {
