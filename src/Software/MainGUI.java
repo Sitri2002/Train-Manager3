@@ -44,7 +44,7 @@ public class MainGUI extends JFrame {
         loginPanel.setPreferredSize(new Dimension(700, 350));
 
         // Adding train image to the left
-        ImageIcon bottomLeftGraphic = createImageIcon("trainImage1.png");
+        ImageIcon bottomLeftGraphic = createImageIcon("Software/resources/trainImage1.png");
         ImageIcon modifiedIcon = makeWhitePixelsTransparent(bottomLeftGraphic);
         JLabel bottomLeftLabel = new JLabel(modifiedIcon);
 
@@ -54,7 +54,7 @@ public class MainGUI extends JFrame {
         imagePanel.add(bottomLeftLabel, BorderLayout.WEST);
 
         // Adding wildcat Logo to the right
-        ImageIcon bottomRightGraphic = createImageIcon("wildcatLogo.png");
+        ImageIcon bottomRightGraphic = createImageIcon("Software/resources/wildcatLogo.png");
         ImageIcon modifiedIcon2 = makeWhitePixelsTransparent(bottomRightGraphic);
         JLabel bottomRightLabel = new JLabel(modifiedIcon2);
 
