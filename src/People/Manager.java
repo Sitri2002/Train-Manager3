@@ -117,17 +117,16 @@ public class Manager extends Person {
 	public void viewTrains() {
 		for(Train train : trainsManaged) {
 			for(Route route : train.getRouteList()) {
-			if(trainsManaged.contains(train)) {
-				System.out.println("Train " + train.getTrainCode() + " is currently " + train.getStatus());
-				System.out.println("Train routes available: ");
-				System.out.println("Departing from: " + route.getStartLocation() + " at " + route.getDepatureTime());
-				System.out.println("Arriving at: " + route.getEndLocation() + " at " + route.getArrivalTime());
+				if(trainsManaged.contains(train)) {
+					System.out.println("Train " + train.getTrainCode() + " is currently " + train.getStatus());
+					System.out.println("Train routes available: ");
+					System.out.println("Departing from: " + route.getStartLocation() + " at " + route.getDepatureTime());
+					System.out.println("Arriving at: " + route.getEndLocation() + " at " + route.getArrivalTime() + "\n");
+				}
+				else {
+					System.out.println("Train could not be found. Please select a different train to view.");
+				}
 			}
-			
-			else {
-				System.out.println("Train could not be found. Please select a different train to view.");
-			}
-		 }
 		}
 	}
 
