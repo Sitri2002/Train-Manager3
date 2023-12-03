@@ -314,19 +314,20 @@ class LoginPanel extends JPanel {
     
     private void ManagerMainMenu() {
     	JFrame main_menu = new JFrame("Train Reservation System");
-
+    	setLayout(new BorderLayout());
+    	
         main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        main_menu.setSize(1000, 700);
+        main_menu.setSize(580, 200);
         main_menu.setLocationRelativeTo(null);
 
-        JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         main_menu.setContentPane(pane1);
         
         pane1.setBackground(new Color(173, 216, 230));
         
         JLabel biglabel = new JLabel("  WELCOME, " + loggedin.getName().toUpperCase() + "!");
         biglabel.setFont(new Font("Arial", Font.ITALIC, 30));
-        biglabel.setHorizontalAlignment(JLabel.CENTER);
+        biglabel.setHorizontalAlignment(JLabel.LEFT);
         
         pane1.add(biglabel, BorderLayout.NORTH);
 
@@ -334,20 +335,28 @@ class LoginPanel extends JPanel {
         
         main_menu.setContentPane(pane1);
         
+        JPanel buttonpanel = new JPanel(new GridLayout(4,1));
+
+        main_menu.add(buttonpanel);
+        
         JButton manage_train = new JButton("Manage trains");
         JButton cancel_train = new JButton("Cancel a train");
         JButton create_new_train = new JButton("Create a new train");
-        JButton logout = new JButton("Log out");
+        
+        Icon icon = new ImageIcon("src/logout.png");
+        JButton logout = new JButton(icon);
+        
+        logout.setFocusable(false); manage_train.setFocusable(false); cancel_train.setFocusable(false); create_new_train.setFocusable(false);
         
         manage_train.setPreferredSize(new Dimension(200, 40));
         cancel_train.setPreferredSize(new Dimension(200, 40));
         create_new_train.setPreferredSize(new Dimension(200, 40));
-        logout.setPreferredSize(new Dimension(200, 40));
+        logout.setPreferredSize(new Dimension(60, 40));
         
-        pane1.add(manage_train);
-        pane1.add(cancel_train);
-        pane1.add(create_new_train);
         pane1.add(logout);
+        pane1.add(manage_train);
+        pane1.add(create_new_train);
+        pane1.add(cancel_train);
         
         manage_train.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -410,6 +419,28 @@ class LoginPanel extends JPanel {
     }
     
     private void cancel_train() {
+    	ArrayList<String> options = new ArrayList<String>();
+    	
+    	if(data1.get_trains().size() == 0) {
+    		JOptionPane.showMessageDialog(null, "There are currently no trains", "Error", JOptionPane.ERROR_MESSAGE);
+    		return;
+    	}
+    	
+    	for(int i = 0; i < data1.get_trains().size(); i++) {
+    		options.add("Train " + data1.get_trains().get(i).getTrainCode());
+    	}
+    	String[] option_str = options.toArray(new String[0]);
+    	JComboBox<String> combobox = new JComboBox<>(option_str);
+    	
+    	int option = JOptionPane.showConfirmDialog(null, combobox, "Pick train to cancel", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+    	int selectedValue = (int)combobox.getSelectedIndex(); // index starts at 0
+    	
+    	int traincode = data1.get_trains().get(selectedValue).getTrainCode();
+		if (option == JOptionPane.OK_OPTION) {
+			data1.get_trains().remove(selectedValue);
+			JOptionPane.showMessageDialog(null, "Successfully cancelled train " + traincode, "Success", JOptionPane.PLAIN_MESSAGE);
+		}
+    	/*
     	JTextField traincode = new JTextField();
 		
 		Object[] inputFields = {"Train code:", traincode};
@@ -436,6 +467,7 @@ class LoginPanel extends JPanel {
 				JOptionPane.showMessageDialog(null, success_msg, "Success", JOptionPane.PLAIN_MESSAGE);
 			}
 		}
+		*/
     }
 
     private void manage_train() {
@@ -463,11 +495,16 @@ class LoginPanel extends JPanel {
     public void ManageTrainPanel(Train t) {
 		JFrame manage_menu = new JFrame("Manage Train");
 		manage_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		manage_menu.setSize(265, 300);
+		manage_menu.setSize(500, 350);
+		manage_menu.setResizable(false);
 		manage_menu.setLocationRelativeTo(null);
 
+        //JPanel imagePanel = new JPanel(new BorderLayout());
+        
+        
         JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
         manage_menu.setContentPane(pane1);
+        pane1.add(new JLabel(new ImageIcon("wildcatLogo.png")));
         
         pane1.setBackground(new Color(173, 216, 230));
         
@@ -604,9 +641,10 @@ class LoginPanel extends JPanel {
     		route_msg = t.getPassengers().get(selectedValue).getBookedRoute().getStartLocation() + "->" + t.getPassengers().get(selectedValue).getBookedRoute().getEndLocation();
     	}
     	
-    	String passenger_msg = "Name: " + t.getPassengers().get(selectedValue).getName() + "\nRoute: " + route_msg + "\nSeat: NOT IMPLEMENTED";
-    
-    	JOptionPane.showMessageDialog(null, passenger_msg, "Passenger " + t.getPassengers().get(selectedValue).getName() + " Info", JOptionPane.PLAIN_MESSAGE);
+    	if (option == JOptionPane.OK_OPTION) {
+    		String passenger_msg = "Name: " + t.getPassengers().get(selectedValue).getName() + "\nRoute: " + route_msg + "\nSeat: NOT IMPLEMENTED";
+    		JOptionPane.showMessageDialog(null, passenger_msg, "Passenger " + t.getPassengers().get(selectedValue).getName() + " Info", JOptionPane.PLAIN_MESSAGE);
+    	}
     }
     
     private void create_route(Train t) {
