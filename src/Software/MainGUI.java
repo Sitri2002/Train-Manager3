@@ -346,8 +346,6 @@ class LoginPanel extends JPanel {
 
 	// check if password is 8 or more characters
 	private boolean isValidPassword(String password) {
-		people_list = Person.loadData();
-
 		if (password.length() < 8) {
 			return false;
 		}
@@ -820,10 +818,21 @@ class LoginPanel extends JPanel {
 		int selectedValue = (int) combobox.getSelectedIndex(); // index starts at 0
 
 		if (option == JOptionPane.OK_OPTION) {
-			ManageRouteWindow(data1.get_routes().get(selectedValue));
+			routeInfoDisplay(data1.get_routes().get(selectedValue));
 		}
 	}
+	
+	private void change_route_price(Route t) {
+		
+	}
+	
+	private void change_route_time(Route t) {
+		
+	}
 
+	private void routeManagePanel(Route r) {
+		
+	}
 	class JTextAreaOutputStream extends OutputStream {
 		private final JTextArea destination;
 
@@ -851,7 +860,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
-	private void ManageRouteWindow(Route r) {
+	private void routeInfoDisplay(Route r) {
 		JTextArea outputArea;
 		JFrame popInfo = new JFrame();
 		JScrollPane scrollPane = null;
