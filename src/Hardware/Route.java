@@ -87,7 +87,39 @@ public class Route implements Serializable {
 	
 	public String printRoute() {
 		return(this.getStartLocation() + " -> " + this.getEndLocation() + " \t\tDeparting at: " + this.getDepatureTime() + " \t\tArriving at: " + this.getArrivalTime());
-		
+	}
+	
+	public void routeDisplay() {
+		System.out.println("Route " + startingLocation + "-" + endLocation + ":");
+		System.out.println("Departs at: " + timeDisplay(departureTime));
+		System.out.println("Arrives at: " + timeDisplay(arrivalTime));
+		System.out.println("" );
+		System.out.println("Passenger list includes:" );
+		for (Passenger p: passengerList) {
+			System.out.println(p.getName() + "- Train " + p.getbookedTrain().getTrainCode());
+		}
+	}
+	
+	public static String timeDisplay(int time) {
+		String r = "";
+		int hour = time/100;
+		int minute = time % 100;
+		String hourString = "";
+		String minuteString = "";
+		if (hour < 10) {
+			hourString = "0" + String.valueOf(hour);
+		}
+		else {
+			hourString = String.valueOf(hour);
+		}
+		if (minute < 10) {
+			minuteString = "0" + String.valueOf(minute);
+		}
+		else {
+			minuteString = String.valueOf(minute);
+		}
+		r = hourString + ":" + minuteString;
+		return r;
 	}
 
 }

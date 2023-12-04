@@ -1,11 +1,11 @@
 package Software;
 
 import java.util.ArrayList;
-
+import java.io.Serializable;
 import Hardware.*;
 import People.*;
 
-public class Data {
+public class Data implements Serializable{
 	public ArrayList<Train> trains;
 	public ArrayList<Route> routes;
 	
