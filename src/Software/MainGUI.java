@@ -44,7 +44,7 @@ public class MainGUI extends JFrame {
         loginPanel.setPreferredSize(new Dimension(700, 350));
 
         // Adding train image to the left
-        ImageIcon bottomLeftGraphic = createImageIcon("Software/resources/trainImage1.png");
+        ImageIcon bottomLeftGraphic = createImageIcon("./Software/resources/trainImage1.png");
         ImageIcon modifiedIcon = makeWhitePixelsTransparent(bottomLeftGraphic);
         JLabel bottomLeftLabel = new JLabel(modifiedIcon);
 
@@ -54,7 +54,7 @@ public class MainGUI extends JFrame {
         imagePanel.add(bottomLeftLabel, BorderLayout.WEST);
 
         // Adding wildcat Logo to the right
-        ImageIcon bottomRightGraphic = createImageIcon("Software/resources/wildcatLogo.png");
+        ImageIcon bottomRightGraphic = createImageIcon("./Software/resources/wildcatLogo.png");
         ImageIcon modifiedIcon2 = makeWhitePixelsTransparent(bottomRightGraphic);
         JLabel bottomRightLabel = new JLabel(modifiedIcon2);
 
@@ -777,16 +777,16 @@ class LoginPanel extends JPanel {
         JButton update_status = new JButton("Update status");
         JButton set_ticket_price = new JButton("Set ticket price");
         JButton manage_passengers = new JButton("Manage passengers");
-        JButton create_route = new JButton("Create route");
+        JButton add_route = new JButton("Add route");
         JButton view_train_status = new JButton("View train status");
         
         update_status.setPreferredSize(new Dimension(200, 40));
         set_ticket_price.setPreferredSize(new Dimension(200, 40));
         manage_passengers.setPreferredSize(new Dimension(200, 40));
-        create_route.setPreferredSize(new Dimension(200, 40));
+        add_route.setPreferredSize(new Dimension(200, 40));
         view_train_status.setPreferredSize(new Dimension(200, 40));
         
-        pane1.add(update_status); pane1.add(set_ticket_price); pane1.add(manage_passengers); pane1.add(create_route); pane1.add(view_train_status);
+        pane1.add(update_status); pane1.add(set_ticket_price); pane1.add(manage_passengers); pane1.add(add_route); pane1.add(view_train_status);
         
         update_status.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -806,9 +806,9 @@ class LoginPanel extends JPanel {
             }
         });
         
-        create_route.addActionListener(new ActionListener() {
+        add_route.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	create_route(t);
+            	add_route(t);
             }
         });
         
@@ -911,7 +911,7 @@ class LoginPanel extends JPanel {
     	}
     }
     
-    private void create_route(Train t) {
+    private void add_route(Train t) {
     	JTextField start_loc = new JTextField();
     	JTextField end_loc = new JTextField();
     	JTextField departtime = new JTextField();
