@@ -372,7 +372,7 @@ class LoginPanel extends JPanel {
 		JFrame main_menu = new JFrame("Train Reservation System");
 
 		main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		main_menu.setSize(430, 190);
+		main_menu.setSize(475, 190);
 		main_menu.setLocationRelativeTo(null);
 		main_menu.setResizable(false);
 
@@ -384,7 +384,8 @@ class LoginPanel extends JPanel {
 		JLabel biglabel = new JLabel("  WELCOME, " + loggedin.getName().toUpperCase() + "!");
 		biglabel.setFont(new Font("Arial", Font.ITALIC, 30));
 		biglabel.setHorizontalAlignment(JLabel.LEFT);
-
+		
+		pane1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		pane1.add(biglabel, BorderLayout.NORTH);
 
 		main_menu.setVisible(true);
