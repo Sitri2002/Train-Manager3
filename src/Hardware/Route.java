@@ -93,7 +93,7 @@ public class Route implements Serializable {
 		System.out.println("Route " + startingLocation + "-" + endLocation + ":");
 		System.out.println("Departs at: " + timeDisplay(departureTime));
 		System.out.println("Arrives at: " + timeDisplay(arrivalTime));
-		System.out.println("Base price (not including seat tier upcharge): " + price);
+		System.out.println("Base price (not including seat tier upcharge): $" + price);
 		System.out.println("" );
 		System.out.println("Passenger list includes:" );
 		for (Passenger p: passengerList) {

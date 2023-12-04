@@ -849,6 +849,32 @@ class LoginPanel extends JPanel {
 	}
 
 	private void change_route_time(Route t) {
+		JTextField depart = new JTextField();
+		JTextField arrive = new JTextField();
+		Object[] input = { "New departure time:", depart, "New arrival time:", arrive };
+		int option = JOptionPane.showConfirmDialog(null, input, "Create Route", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (option == JOptionPane.OK_OPTION) {
+			if (depart.getText().equals("") || arrive.getText().equals("")) {
+				String error_message = "Please input all the neccessary fields.";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			int departureTime = Integer.valueOf(depart.getText());
+			int arrivalTime = Integer.valueOf(arrive.getText());
+			if (departureTime < 0 || departureTime > 2359 || arrivalTime < 0 || arrivalTime > 2359) {
+				String error_message = "Invalid time code.";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			} else {
+				t.setArrivalTime(arrivalTime);
+				t.setDepartureTime(departureTime);
+				JOptionPane.showMessageDialog(null, "Successfully set new time.",
+						"Success", JOptionPane.PLAIN_MESSAGE);
+				return;
+			}
+		}
 
 	}
 
