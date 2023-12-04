@@ -276,90 +276,85 @@ class LoginPanel extends JPanel {
 		if (result == JOptionPane.OK_OPTION) {
 			String selectedValue = (String) comboBox.getSelectedItem();
 			if (selectedValue.equals("Passenger")) {
-				            String selectedValue = (String) comboBox.getSelectedItem();
-            
-            if(selectedValue.equals("Passenger")) {
-            	if(!isValidUsername(name_str)) {
-            		JOptionPane.showMessageDialog(null,
-		    				"That username is already being used.\nPlease enter a different one.",
-							"Username already taken",
-							JOptionPane.ERROR_MESSAGE);
-            	}
-            	
-            	else if(!isValidPassword(password_str)) {
-		        	JOptionPane.showMessageDialog(null,
-		    				"Password must be 8 characters or more.",
-							"Please enter a new password",
-							JOptionPane.ERROR_MESSAGE);
-	            }
-				else {
-				Passenger p = new Passenger();
-				p.setName(name_str);
-				p.setUsername(username_str);
-				p.setPassword(password_str);
-				p.setEmail(email_str);
-				people_list.add(p);
-				passenger_list.add(p);
+				selectedValue = (String) comboBox.getSelectedItem();
 
-				Passenger.saveData(people_list);
+				if (selectedValue.equals("Passenger")) {
+					if (!isValidUsername(name_str)) {
+						JOptionPane.showMessageDialog(null,
+								"That username is already being used.\nPlease enter a different one.",
+								"Username already taken", JOptionPane.ERROR_MESSAGE);
+					}
 
-				JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
-				}
-			}
-			else if (selectedValue.equals("Manager")) {
-            if(selectedValue.equals("Passenger")) {
-            	if(!isValidUsername(name_str)) {
-            		JOptionPane.showMessageDialog(null,
-		    				"That username is already being used.\nPlease enter a different one.",
-							"Username already taken",
-							JOptionPane.ERROR_MESSAGE);
-            	}
-            	
-            	else if(!isValidPassword(password_str)) {
-		        	JOptionPane.showMessageDialog(null,
-		    				"Password must be 8 characters or more.",
-							"Please enter a new password",
-							JOptionPane.ERROR_MESSAGE);
-	            }
-				else{
-				Manager m = new Manager();
-				m.setName(name_str);
-				m.setUsername(username_str);
-				m.setPassword(password_str);
-				m.setEmail(email_str);
-				people_list.add(m);
-				manager_list.add(m);
+					else if (!isValidPassword(password_str)) {
+						JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
+								"Please enter a new password", JOptionPane.ERROR_MESSAGE);
+					} else {
+						Passenger p = new Passenger();
+						p.setName(name_str);
+						p.setUsername(username_str);
+						p.setPassword(password_str);
+						p.setEmail(email_str);
+						people_list.add(p);
+						passenger_list.add(p);
 
-				Manager.saveData(people_list);
+						Passenger.saveData(people_list);
 
-				JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+						JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+					}
+				} else if (selectedValue.equals("Manager")) {
+					if (selectedValue.equals("Passenger")) {
+						if (!isValidUsername(name_str)) {
+							JOptionPane.showMessageDialog(null,
+									"That username is already being used.\nPlease enter a different one.",
+									"Username already taken", JOptionPane.ERROR_MESSAGE);
+						}
+
+						else if (!isValidPassword(password_str)) {
+							JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
+									"Please enter a new password", JOptionPane.ERROR_MESSAGE);
+						} else {
+							Manager m = new Manager();
+							m.setName(name_str);
+							m.setUsername(username_str);
+							m.setPassword(password_str);
+							m.setEmail(email_str);
+							people_list.add(m);
+							manager_list.add(m);
+
+							Manager.saveData(people_list);
+
+							JOptionPane.showMessageDialog(null,
+									"Created a " + selectedValue + " account for " + name_str);
+						}
+					}
 				}
 			}
 		}
 	}
+
 	// find is username is already taken... needs to be unique
-    private boolean isValidUsername(String username) {
-    	people_list = Person.loadData();
-    	
-    	for(int i = 0; i < people_list.size(); i++) {
-    		if(people_list.get(i).getUsername().equals(username)) {
-    			return false;
-    		}
-    	}
-    	return true; // default case
-    }
-    
-    // check if password is 8 or more characters
-    private boolean isValidPassword(String password) {
-    	people_list = Person.loadData();
-    	
-    		if(password.length() < 8) {
-    			return false;
-    		}
-    	return true; // default case
-    }
-    
-    // check if username and login are a valid match to the system
+	private boolean isValidUsername(String username) {
+		people_list = Person.loadData();
+
+		for (int i = 0; i < people_list.size(); i++) {
+			if (people_list.get(i).getUsername().equals(username)) {
+				return false;
+			}
+		}
+		return true; // default case
+	}
+
+	// check if password is 8 or more characters
+	private boolean isValidPassword(String password) {
+		people_list = Person.loadData();
+
+		if (password.length() < 8) {
+			return false;
+		}
+		return true; // default case
+	}
+
+	// check if username and login are a valid match to the system
 	private boolean isValidLogin(String username, String password) {
 		people_list = Person.loadData();
 
@@ -1131,7 +1126,7 @@ class LoginPanel extends JPanel {
 
 		manage_menu.setVisible(true);
 	}
-	
+
 	private void display_info(Train t) {
 		JTextArea outputArea;
 		JFrame popInfo = new JFrame();
@@ -1146,9 +1141,9 @@ class LoginPanel extends JPanel {
 		popInfo.setVisible(true);
 		JTextAreaOutputStream out = new JTextAreaOutputStream(outputArea);
 		System.setOut(new PrintStream(out));
-		
+
 	}
-	
+
 	private void add_route(Train t) {
 		JFrame route_menu = new JFrame("Adding route to train schedule");
 		route_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1163,16 +1158,16 @@ class LoginPanel extends JPanel {
 		// pane1.add(new JLabel(new ImageIcon("wildcatLogo.png")));
 
 		pane1.setBackground(new Color(173, 216, 230));
-		
+
 		JButton add_route = new JButton("Create a new route outside of existing list.");
 		JButton select_route = new JButton("Select a route from the already created routes.");
-		
+
 //		add_route.setPreferredSize(new Dimension(200, 80));
 //		select_route.setPreferredSize(new Dimension(200, 80));
-		
+
 		pane1.add(select_route);
 		pane1.add(add_route);
-		
+
 		select_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				select_route(t);
@@ -1184,7 +1179,7 @@ class LoginPanel extends JPanel {
 				add_new_route(t);
 			}
 		});
-		
+
 		route_menu.setContentPane(pane1);
 		route_menu.setVisible(true);
 	}
