@@ -73,9 +73,9 @@ public class Train implements Serializable{
 	}
 
 	public void printSchedule() {
-		routeList.sort((o1, o2) -> Integer.compare(o1.getDepatureTime(),o2.getDepatureTime()));
+		routeList.sort((o1, o2) -> Integer.compare(o1.getDepartureTime(),o2.getDepartureTime()));
 		for (Route route : routeList) {
-			System.out.println("Route " + route.getStartLocation() + "-" + route.getEndLocation() + " Departure: " + route.getDepatureTime() + " - Arrival: " + route.getArrivalTime());
+			System.out.println("Route " + route.getStartLocation() + "-" + route.getEndLocation() + " Departure: " + route.getDepartureTime() + " - Arrival: " + route.getArrivalTime());
 		}
 	}
 

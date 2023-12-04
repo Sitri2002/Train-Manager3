@@ -64,7 +64,7 @@ public class Passenger extends Person {
 		if (bookedTrain != null) {
 			System.out.println("Your upcoming booked train number" + bookedTrain.getTrainCode() + " is currently " + bookedTrain.getStatus());// add train status
 			System.out.println("Your route is ");
-			System.out.println("Departing from: " + bookedRoute.getStartLocation() + " at " + bookedRoute.getDepatureTime());
+			System.out.println("Departing from: " + bookedRoute.getStartLocation() + " at " + bookedRoute.getDepartureTime());
 			System.out.println("Arriving at: " + bookedRoute.getEndLocation() + " at " + bookedRoute.getArrivalTime());
 		} else {
 			System.out.println("There is no train booked currently");

@@ -44,7 +44,7 @@ public class Route implements Serializable {
 		departureTime = time;
 	}
 	
-	public int getDepatureTime() {
+	public int getDepartureTime() {
 		return departureTime;
 	}
 	
@@ -86,7 +86,7 @@ public class Route implements Serializable {
 	}
 	
 	public String printRoute() {
-		return(this.getStartLocation() + " -> " + this.getEndLocation() + " \t\tDeparting at: " + this.getDepatureTime() + " \t\tArriving at: " + this.getArrivalTime());
+		return(this.getStartLocation() + " -> " + this.getEndLocation() + " \t\tDeparting at: " + this.getDepartureTime() + " \t\tArriving at: " + this.getArrivalTime());
 	}
 	
 	public void routeDisplay() {

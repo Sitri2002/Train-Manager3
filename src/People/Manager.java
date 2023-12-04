@@ -120,7 +120,7 @@ public class Manager extends Person {
 				if(trainsManaged.contains(train)) {
 					System.out.println("Train " + train.getTrainCode() + " is currently " + train.getStatus());
 					System.out.println("Train routes available: ");
-					System.out.println("Departing from: " + route.getStartLocation() + " at " + route.getDepatureTime());
+					System.out.println("Departing from: " + route.getStartLocation() + " at " + route.getDepartureTime());
 					System.out.println("Arriving at: " + route.getEndLocation() + " at " + route.getArrivalTime() + "\n");
 				}
 				else {
