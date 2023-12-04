@@ -710,7 +710,7 @@ class LoginPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		main_menu.setSize(580, 200);
+		main_menu.setSize(450, 250);
 		main_menu.setLocationRelativeTo(null);
 		main_menu.setResizable(false);
 

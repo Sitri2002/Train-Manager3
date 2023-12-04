@@ -1,6 +1,11 @@
 package Software;
 
 import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import Hardware.*;
 import People.*;
@@ -29,4 +34,48 @@ public class Data implements Serializable{
 	public ArrayList<Route> get_routes() {
 		return routes;
 	}
+	
+	public static void saveData(Data d){
+		FileOutputStream fileOut = null;
+		ObjectOutputStream objOut= null;
+
+		try 
+		{
+			fileOut = new FileOutputStream("root/data.ser");		//the Employee object makes its way to serial data in the file Employee.ser
+			objOut = new ObjectOutputStream(fileOut);
+			objOut.writeObject(d);
+			objOut.close();
+			fileOut.close();
+	     }	
+		
+		catch(IOException i)
+	    {
+			i.printStackTrace();
+	    }		
+ 	}
+	
+	public static Data loadData()
+	{	
+		FileInputStream fileIn = null;
+		ObjectInputStream objIn = null;
+		Data d=null;
+			
+		try
+		{
+			fileIn = new FileInputStream("root/data.ser");
+			objIn = new ObjectInputStream(fileIn);
+			d = (Data)objIn.readObject();
+			objIn.close();
+			fileIn.close();
+		}
+		catch(IOException i)
+		{
+			i.printStackTrace();
+		} 
+		catch (ClassNotFoundException e) 
+		{
+			e.printStackTrace();
+		}  
+		return d;
+	}	
 }
