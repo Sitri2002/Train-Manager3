@@ -44,7 +44,7 @@ public class MainGUI extends JFrame {
 		loginPanel.setPreferredSize(new Dimension(700, 350));
 
 		// Adding train image to the left
-		ImageIcon bottomLeftGraphic = createImageIcon("./Software/resources/trainImage1.png");
+		ImageIcon bottomLeftGraphic = new ImageIcon("./src/Software/resources/trainImage1.png");
 		ImageIcon modifiedIcon = makeWhitePixelsTransparent(bottomLeftGraphic);
 		JLabel bottomLeftLabel = new JLabel(modifiedIcon);
 
@@ -54,7 +54,7 @@ public class MainGUI extends JFrame {
 		imagePanel.add(bottomLeftLabel, BorderLayout.WEST);
 
 		// Adding wildcat Logo to the right
-		ImageIcon bottomRightGraphic = createImageIcon("./Software/resources/wildcatLogo.png");
+		ImageIcon bottomRightGraphic = new ImageIcon("./src/Software/resources/wildcatLogo.png");
 		ImageIcon modifiedIcon2 = makeWhitePixelsTransparent(bottomRightGraphic);
 		JLabel bottomRightLabel = new JLabel(modifiedIcon2);
 
@@ -68,15 +68,15 @@ public class MainGUI extends JFrame {
 		add(imagePanel, BorderLayout.SOUTH);
 	}
 
-	private ImageIcon createImageIcon(String filename) {
-		URL url = getClass().getClassLoader().getResource(filename);
-		if (url != null) {
-			return new ImageIcon(url);
-		} else {
-			System.err.println("Resource not found: " + filename);
-			return null;
-		}
-	}
+//	private ImageIcon createImageIcon(String filename) {
+//		URL url = getClass().getClassLoader().getResource(filename);
+//		if (url != null) {
+//			return new ImageIcon(url);
+//		} else {
+//			System.err.println("Resource not found: " + filename);
+//			return null;
+//		}
+//	}
 
 	private ImageIcon makeWhitePixelsTransparent(ImageIcon icon) {
 		Image image = icon.getImage();
@@ -391,7 +391,7 @@ class LoginPanel extends JPanel {
 
 		main_menu.setContentPane(pane1);
 
-		Icon icon = new ImageIcon("src/logout.png");
+		Icon icon = new ImageIcon("./src/Software/resources/logout.png");
 		JButton logout = new JButton(icon);
 
 		JButton view_train_button = new JButton("View available trains");
@@ -738,7 +738,7 @@ class LoginPanel extends JPanel {
 		JButton create_new_train = new JButton("Create a new train");
 		JButton manage_route = new JButton("View routes");
 		JButton create_route = new JButton("Create route");
-		Icon icon = new ImageIcon("src/logout.png");
+		Icon icon = new ImageIcon("./src/Software/resources/logout.png");
 		JButton logout = new JButton(icon);
 
 		logout.setFocusable(false);
@@ -824,7 +824,28 @@ class LoginPanel extends JPanel {
 	}
 
 	private void change_route_price(Route t) {
-		
+		JTextField price = new JTextField();
+		Object[] input = { "New price", price };
+		int option = JOptionPane.showConfirmDialog(null, input, "Create Route", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		if (option == JOptionPane.OK_OPTION) {
+			if (price.getText().equals("")) {
+				String error_message = "Please input all the neccessary fields.";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if (Integer.valueOf(price.getText()) < 0) {
+				String error_message = "Price cannot be negative.";
+				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			} else {
+				t.setPrice(Integer.valueOf(price.getText()));
+				JOptionPane.showMessageDialog(null, "Successfully changed price to " + Integer.valueOf(price.getText()),
+						"Success", JOptionPane.PLAIN_MESSAGE);
+				return;
+			}
+		}
+
 	}
 
 	private void change_route_time(Route t) {
@@ -866,7 +887,7 @@ class LoginPanel extends JPanel {
 				change_route_time(r);
 			}
 		});
-		
+
 		routeInfoDisplay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				routeInfoDisplay(r);
@@ -910,7 +931,7 @@ class LoginPanel extends JPanel {
 		JScrollPane scrollPane = null;
 		popInfo.setTitle("Route Info");
 		popInfo.setLayout(new FlowLayout());
-		outputArea = new JTextArea(20, 20);
+		outputArea = new JTextArea(20, 50);
 		outputArea.setEditable(false);
 		scrollPane = new JScrollPane(outputArea);
 		popInfo.add(scrollPane);
