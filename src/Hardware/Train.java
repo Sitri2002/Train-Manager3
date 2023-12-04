@@ -8,10 +8,10 @@ import java.util.Map;
 import People.*;
 import Software.*;
 
-public class Train implements Serializable{
+public class Train implements Serializable {
 
 	private int trainCode;
-	private double[] seatTiers = {1,1.5,2};
+	private double[] seatTiers = { 1, 1.5, 2 };
 	private String status;
 	private ArrayList<Route> routeList;
 	private ArrayList<Integer> schedule;
@@ -72,9 +72,10 @@ public class Train implements Serializable{
 	}
 
 	public void printSchedule() {
-		routeList.sort((o1, o2) -> Integer.compare(o1.getDepartureTime(),o2.getDepartureTime()));
+		routeList.sort((o1, o2) -> Integer.compare(o1.getDepartureTime(), o2.getDepartureTime()));
 		for (Route route : routeList) {
-			System.out.println("Route " + route.getStartLocation() + "-" + route.getEndLocation() + " Departure: " + route.getDepartureTime() + " - Arrival: " + route.getArrivalTime());
+			System.out.println("Route " + route.getStartLocation() + "-" + route.getEndLocation() + " Departure: "
+					+ route.getDepartureTime() + " - Arrival: " + route.getArrivalTime());
 		}
 	}
 
@@ -99,10 +100,10 @@ public class Train implements Serializable{
 			System.out.println("This newly added Route " + r.getStartLocation() + "-" + r.getEndLocation()
 					+ " is not compatible with current routes. Please add a different route that will form either a complete cycle"
 					+ " (Strongly connected) or a directed single path (Unilateral connected)");
-		}
-		else {
+		} else {
 			routeList.add(r);
-			System.out.println("Newly added Route " + r.getStartLocation() + "-" + r.getEndLocation() + " is compatible. Added");
+			System.out.println(
+					"Newly added Route " + r.getStartLocation() + "-" + r.getEndLocation() + " is compatible. Added");
 		}
 		temp.clear();
 	}
@@ -118,13 +119,13 @@ public class Train implements Serializable{
 			System.out.println("This newly requested removal Route " + r.getStartLocation() + "-" + r.getEndLocation()
 					+ " is not compatible with current routes for removal. Please remove a different route that will form either a complete cycle"
 					+ " (Strongly connected) or a directed single path (Unilateral connected)");
-		}
-		else {
+		} else {
 			routeList.remove(r);
-			System.out.println("Newly requested removal Route " + r.getStartLocation() + "-" + r.getEndLocation() + " is safe to remove. Removed");
+			System.out.println("Newly requested removal Route " + r.getStartLocation() + "-" + r.getEndLocation()
+					+ " is safe to remove. Removed");
 		}
 		temp.clear();
-		
+
 	}
 
 	public void addTimeToSchedule(int time) {
@@ -240,4 +241,24 @@ public class Train implements Serializable{
 		return pm;
 	}
 
+	public void trainDisplay() {
+		System.out.println("Train " + trainCode + " information:");
+		System.out.println("Status: " + status);
+		System.out.println("Economy tier seat price: " + seatTiers[0] * 100 + "% of route price.");
+		System.out.println("Business tier seat price: " + seatTiers[1] * 100 + "% of route price.");
+		System.out.println("First Class tier seat price: " + seatTiers[2] * 100 + "% of route price.");
+		System.out.println("");
+		System.out.println("All the current routes for train " + trainCode + ":");
+		for (Route r : routeList) {
+			System.out.println("Route " + r.getStartLocation() + " - " + r.getEndLocation());
+			System.out.println("Schedule: " + Route.timeDisplay(r.getDepartureTime()) + " - "
+					+ Route.timeDisplay(r.getArrivalTime()));
+			System.out.println("Price: " + r.getPrice());
+			System.out.println("");
+		}
+		System.out.println("Passengers who booked this train:");
+		for (Passenger p : passengerList) {
+			System.out.println(p.getName() + " - Seat tier purchased: " + p.getSeatTier());
+		}
+	}
 }

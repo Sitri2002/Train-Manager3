@@ -384,7 +384,7 @@ class LoginPanel extends JPanel {
 		JLabel biglabel = new JLabel("  WELCOME, " + loggedin.getName().toUpperCase() + "!");
 		biglabel.setFont(new Font("Arial", Font.ITALIC, 30));
 		biglabel.setHorizontalAlignment(JLabel.LEFT);
-		
+
 		pane1.setLayout(new FlowLayout(FlowLayout.CENTER));
 		pane1.add(biglabel, BorderLayout.NORTH);
 
@@ -861,7 +861,7 @@ class LoginPanel extends JPanel {
 				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+
 			int departureTime = Integer.valueOf(depart.getText());
 			int arrivalTime = Integer.valueOf(arrive.getText());
 			if (departureTime < 0 || departureTime > 2359 || arrivalTime < 0 || arrivalTime > 2359) {
@@ -871,8 +871,7 @@ class LoginPanel extends JPanel {
 			} else {
 				t.setArrivalTime(arrivalTime);
 				t.setDepartureTime(departureTime);
-				JOptionPane.showMessageDialog(null, "Successfully set new time.",
-						"Success", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Successfully set new time.", "Success", JOptionPane.PLAIN_MESSAGE);
 				return;
 			}
 		}
@@ -1234,7 +1233,7 @@ class LoginPanel extends JPanel {
 		JScrollPane scrollPane = null;
 		popInfo.setTitle("Route Info");
 		popInfo.setLayout(new FlowLayout());
-		outputArea = new JTextArea(20, 20);
+		outputArea = new JTextArea(40, 50);
 		outputArea.setEditable(false);
 		scrollPane = new JScrollPane(outputArea);
 		popInfo.add(scrollPane);
@@ -1242,6 +1241,7 @@ class LoginPanel extends JPanel {
 		popInfo.setVisible(true);
 		JTextAreaOutputStream out = new JTextAreaOutputStream(outputArea);
 		System.setOut(new PrintStream(out));
+		t.trainDisplay();
 
 	}
 
@@ -1309,14 +1309,36 @@ class LoginPanel extends JPanel {
 
 	private void set_ticket_price(Train t) {
 		// ArrayList<String>options = new ArrayList<String>();
-		JTextField tier1 =  new JTextField();
-		JTextField tier2 =  new JTextField();
-		JTextField tier3 =  new JTextField();
-		
-		Object[] field = {"T1 Price", tier1, "T2 price", tier2, "T3 price", tier3};
-		
+		JTextField tier1 = new JTextField();
+		JTextField tier2 = new JTextField();
+		JTextField tier3 = new JTextField();
+
+		Object[] field = { "Economy seat", tier1, "Business seat", tier2, "First Class seat", tier3 };
+
 		int option = JOptionPane.showConfirmDialog(null, field, "Change ticket price", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
+
+		if (option == JOptionPane.OK_OPTION) {
+			if (tier1.getText().equals("") || tier2.getText().equals("") || tier3.getText().equals("")) {
+				JOptionPane.showMessageDialog(null, "Please enter all the price categories.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			int t1 = Integer.valueOf(tier1.getText());
+			int t2 = Integer.valueOf(tier2.getText());
+			int t3 = Integer.valueOf(tier3.getText());
+
+			if (t1 < 1 || t2 < 1 || t3 < 1) {
+				JOptionPane.showMessageDialog(null, "Seat price cannot be lower than the base route price.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				t.setSeat(t1, 0);
+				t.setSeat(t2, 1);
+				t.setSeat(t3, 2);
+			}
+		}
 	}
 
 	private void manage_passengers(Train t) {
