@@ -276,6 +276,23 @@ class LoginPanel extends JPanel {
 		if (result == JOptionPane.OK_OPTION) {
 			String selectedValue = (String) comboBox.getSelectedItem();
 			if (selectedValue.equals("Passenger")) {
+				            String selectedValue = (String) comboBox.getSelectedItem();
+            
+            if(selectedValue.equals("Passenger")) {
+            	if(!isValidUsername(name_str)) {
+            		JOptionPane.showMessageDialog(null,
+		    				"That username is already being used.\nPlease enter a different one.",
+							"Username already taken",
+							JOptionPane.ERROR_MESSAGE);
+            	}
+            	
+            	else if(!isValidPassword(password_str)) {
+		        	JOptionPane.showMessageDialog(null,
+		    				"Password must be 8 characters or more.",
+							"Please enter a new password",
+							JOptionPane.ERROR_MESSAGE);
+	            }
+				else {
 				Passenger p = new Passenger();
 				p.setName(name_str);
 				p.setUsername(username_str);
@@ -287,7 +304,24 @@ class LoginPanel extends JPanel {
 				Passenger.saveData(people_list);
 
 				JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
-			} else if (selectedValue.equals("Manager")) {
+				}
+			}
+			else if (selectedValue.equals("Manager")) {
+            if(selectedValue.equals("Passenger")) {
+            	if(!isValidUsername(name_str)) {
+            		JOptionPane.showMessageDialog(null,
+		    				"That username is already being used.\nPlease enter a different one.",
+							"Username already taken",
+							JOptionPane.ERROR_MESSAGE);
+            	}
+            	
+            	else if(!isValidPassword(password_str)) {
+		        	JOptionPane.showMessageDialog(null,
+		    				"Password must be 8 characters or more.",
+							"Please enter a new password",
+							JOptionPane.ERROR_MESSAGE);
+	            }
+				else{
 				Manager m = new Manager();
 				m.setName(name_str);
 				m.setUsername(username_str);
@@ -299,10 +333,33 @@ class LoginPanel extends JPanel {
 				Manager.saveData(people_list);
 
 				JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+				}
 			}
 		}
 	}
-
+	// find is username is already taken... needs to be unique
+    private boolean isValidUsername(String username) {
+    	people_list = Person.loadData();
+    	
+    	for(int i = 0; i < people_list.size(); i++) {
+    		if(people_list.get(i).getUsername().equals(username)) {
+    			return false;
+    		}
+    	}
+    	return true; // default case
+    }
+    
+    // check if password is 8 or more characters
+    private boolean isValidPassword(String password) {
+    	people_list = Person.loadData();
+    	
+    		if(password.length() < 8) {
+    			return false;
+    		}
+    	return true; // default case
+    }
+    
+    // check if username and login are a valid match to the system
 	private boolean isValidLogin(String username, String password) {
 		people_list = Person.loadData();
 
@@ -419,7 +476,7 @@ class LoginPanel extends JPanel {
 					for (int j = 0; j < data1.get_trains().get(i).getRouteList().size(); j++) {
 						System.out.println(
 								"Departing from: " + data1.get_trains().get(i).getRouteList().get(j).getStartLocation()
-										+ " at " + data1.get_trains().get(i).getRouteList().get(j).getDepatureTime());
+										+ " at " + data1.get_trains().get(i).getRouteList().get(j).getDepartureTime());
 						System.out.println("Arriving at: "
 								+ data1.get_trains().get(i).getRouteList().get(j).getEndLocation() + " at "
 								+ data1.get_trains().get(i).getRouteList().get(j).getArrivalTime() + "\n");
@@ -507,7 +564,7 @@ class LoginPanel extends JPanel {
 										+ ": " + data1.get_trains().get(i).getRouteList().get(j).getStartLocation()
 										+ "->" + data1.get_trains().get(i).getRouteList().get(j).getEndLocation()
 										+ "<br>" + "Departing at: "
-										+ data1.get_trains().get(i).getRouteList().get(j).getDepatureTime()
+										+ data1.get_trains().get(i).getRouteList().get(j).getDepartureTime()
 										+ ", Arriving at: "
 										+ data1.get_trains().get(i).getRouteList().get(j).getArrivalTime() + "<br>"
 										+ "Price: $" + data1.get_trains().get(i).getRouteList().get(j).getPrice()
@@ -526,7 +583,7 @@ class LoginPanel extends JPanel {
 														.getEndLocation()
 												+ " that departs at "
 												+ data1.get_trains().get(finali).getRouteList().get(finalj)
-														.getDepatureTime()
+														.getDepartureTime()
 												+ " for $"
 												+ data1.get_trains().get(finali).getRouteList().get(finalj).getPrice(),
 												"Booked train", JOptionPane.PLAIN_MESSAGE);
@@ -647,7 +704,7 @@ class LoginPanel extends JPanel {
 			JOptionPane.showMessageDialog(null,
 					"Your booking is currently " + p.getBookedRoute().getStartLocation() + "->"
 							+ p.getBookedRoute().getEndLocation() + " departing at "
-							+ p.getBookedRoute().getDepatureTime(),
+							+ p.getBookedRoute().getDepartureTime(),
 					"Viewing Booking", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
@@ -757,7 +814,7 @@ class LoginPanel extends JPanel {
 		for (int i = 0; i < data1.get_routes().size(); i++) {
 			options.add("Route " + data1.get_routes().get(i).getStartLocation() + " - "
 					+ data1.get_routes().get(i).getEndLocation() + ": "
-					+ Route.timeDisplay(data1.get_routes().get(i).getDepatureTime()) + " - "
+					+ Route.timeDisplay(data1.get_routes().get(i).getDepartureTime()) + " - "
 					+ Route.timeDisplay(data1.get_routes().get(i).getArrivalTime()));
 		}
 		String[] option_str = options.toArray(new String[0]);
@@ -846,7 +903,7 @@ class LoginPanel extends JPanel {
 
 			for (Route r : data1.get_routes()) {
 				if (r.getStartLocation().equals(start) && r.getEndLocation().equals(end) && r.getArrivalTime() == arrive
-						&& r.getDepatureTime() == depart) {
+						&& r.getDepartureTime() == depart) {
 					repeat = true;
 				}
 			}
@@ -1236,7 +1293,7 @@ class LoginPanel extends JPanel {
 		for (int i = 0; i < data1.get_routes().size(); i++) {
 			options.add("Route " + data1.get_routes().get(i).getStartLocation() + " - "
 					+ data1.get_routes().get(i).getEndLocation() + ": "
-					+ Route.timeDisplay(data1.get_routes().get(i).getDepatureTime()) + " - "
+					+ Route.timeDisplay(data1.get_routes().get(i).getDepartureTime()) + " - "
 					+ Route.timeDisplay(data1.get_routes().get(i).getArrivalTime()));
 		}
 		String[] option_str = options.toArray(new String[0]);
@@ -1291,7 +1348,7 @@ class LoginPanel extends JPanel {
 
 			for (Route r : data1.get_routes()) {
 				if (r.getStartLocation().equals(start) && r.getEndLocation().equals(end) && r.getArrivalTime() == arrive
-						&& r.getDepatureTime() == depart) {
+						&& r.getDepartureTime() == depart) {
 					repeat = true;
 				}
 			}
