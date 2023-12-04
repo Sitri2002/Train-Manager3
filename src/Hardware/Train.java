@@ -11,7 +11,7 @@ import Software.*;
 public class Train implements Serializable{
 
 	private int trainCode;
-	private int[] seatTiers;
+	private double[] seatTiers = {1,1.5,2};
 	private String status;
 	private ArrayList<Route> routeList;
 	private ArrayList<Integer> schedule;
@@ -20,7 +20,6 @@ public class Train implements Serializable{
 	public Train() {
 		trainCode = 0;
 		status = "in the station";
-		seatTiers = new int[3];
 		routeList = new ArrayList<Route>();
 		schedule = new ArrayList<Integer>();
 		passengerList = new ArrayList<Passenger>();
@@ -34,15 +33,15 @@ public class Train implements Serializable{
 		trainCode = c;
 	}
 
-	public int getSeatTier(int i) {
+	public double getSeatTier(int i) {
 		return seatTiers[i];
 	}
 
-	public void setSeat(int seat, int i) {
+	public void setSeat(double seat, int i) {
 		seatTiers[i] = seat;
 	}
 
-	public void setSeatTiers(int[] seat) {
+	public void setSeatTiers(double[] seat) {
 		seatTiers = seat;
 	}
 
