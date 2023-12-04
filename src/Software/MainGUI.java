@@ -346,6 +346,7 @@ class LoginPanel extends JPanel {
 
 	// check if password is 8 or more characters
 	private boolean isValidPassword(String password) {
+		people_list = Person.loadData();
 		if (password.length() < 8) {
 			return false;
 		}
@@ -818,21 +819,64 @@ class LoginPanel extends JPanel {
 		int selectedValue = (int) combobox.getSelectedIndex(); // index starts at 0
 
 		if (option == JOptionPane.OK_OPTION) {
-			routeInfoDisplay(data1.get_routes().get(selectedValue));
+			routeManagePanel(data1.get_routes().get(selectedValue));
 		}
 	}
-	
+
 	private void change_route_price(Route t) {
 		
 	}
-	
+
 	private void change_route_time(Route t) {
-		
+
 	}
 
 	private void routeManagePanel(Route r) {
+		JFrame route_menu = new JFrame("Commands for route " + r.getStartLocation() + " - " + r.getEndLocation() + ": "
+				+ Route.timeDisplay(r.getDepartureTime()) + " - " + Route.timeDisplay(r.getArrivalTime()));
+		route_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		route_menu.setSize(470, 200);
+		route_menu.setResizable(false);
+		route_menu.setLocationRelativeTo(null);
+
+		// JPanel imagePanel = new JPanel(new BorderLayout());
+
+		JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		route_menu.setContentPane(pane1);
+		// pane1.add(new JLabel(new ImageIcon("wildcatLogo.png")));
+
+		pane1.setBackground(new Color(173, 216, 230));
+
+		JButton change_route_price = new JButton("Change route pricing.");
+		JButton change_route_time = new JButton("Change departure and arrival time of this route.");
+		JButton routeInfoDisplay = new JButton("Display route information.");
+
+		pane1.add(change_route_price);
+		pane1.add(change_route_time);
+		pane1.add(routeInfoDisplay);
+
+		change_route_price.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				change_route_price(r);
+			}
+		});
+
+		change_route_time.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				change_route_time(r);
+			}
+		});
 		
+		routeInfoDisplay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				routeInfoDisplay(r);
+			}
+		});
+
+		route_menu.setContentPane(pane1);
+		route_menu.setVisible(true);
 	}
+
 	class JTextAreaOutputStream extends OutputStream {
 		private final JTextArea destination;
 
