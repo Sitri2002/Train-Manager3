@@ -826,7 +826,7 @@ class LoginPanel extends JPanel {
 	private void change_route_price(Route t) {
 		JTextField price = new JTextField();
 		Object[] input = { "New price", price };
-		int option = JOptionPane.showConfirmDialog(null, input, "Create Route", JOptionPane.OK_CANCEL_OPTION,
+		int option = JOptionPane.showConfirmDialog(null, input, "Change route price", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (option == JOptionPane.OK_OPTION) {
 			if (price.getText().equals("")) {
@@ -852,7 +852,7 @@ class LoginPanel extends JPanel {
 		JTextField depart = new JTextField();
 		JTextField arrive = new JTextField();
 		Object[] input = { "New departure time:", depart, "New arrival time:", arrive };
-		int option = JOptionPane.showConfirmDialog(null, input, "Create Route", JOptionPane.OK_CANCEL_OPTION,
+		int option = JOptionPane.showConfirmDialog(null, input, "Change route schedule", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (option == JOptionPane.OK_OPTION) {
 			if (depart.getText().equals("") || arrive.getText().equals("")) {
@@ -1308,34 +1308,14 @@ class LoginPanel extends JPanel {
 
 	private void set_ticket_price(Train t) {
 		// ArrayList<String>options = new ArrayList<String>();
-		ArrayList<String> options = new ArrayList<String>();
-
-		if (t.getRouteList().size() == 0) {
-			JOptionPane.showMessageDialog(null, "There are currently no routes for this train", "Error",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		for (int i = 0; i < t.getRouteList().size(); i++) {
-			options.add(t.getRouteList().get(i).getStartLocation() + "->" + t.getRouteList().get(i).getEndLocation());
-		}
-		String[] option_str = options.toArray(new String[0]);
-		JComboBox<String> combobox = new JComboBox<>(option_str);
-
-		int option = JOptionPane.showConfirmDialog(null, combobox, "Pick Route", JOptionPane.OK_CANCEL_OPTION,
+		JTextField tier1 =  new JTextField();
+		JTextField tier2 =  new JTextField();
+		JTextField tier3 =  new JTextField();
+		
+		Object[] field = {"T1 Price", tier1, "T2 price", tier2, "T3 price", tier3};
+		
+		int option = JOptionPane.showConfirmDialog(null, field, "Change ticket price", JOptionPane.OK_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
-		int selectedValue = (int) combobox.getSelectedIndex(); // index starts at 0
-
-		JTextField newprice = new JTextField();
-		Object[] input_field = { "Price for " + t.getRouteList().get(selectedValue).getStartLocation() + "->"
-				+ t.getRouteList().get(selectedValue).getEndLocation() + ": ", newprice };
-		int price_choice = JOptionPane.showConfirmDialog(null, input_field, "Set Ticket Price",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-		System.out.println("$" + newprice.getText());
-		t.getRouteList().get(selectedValue).setPrice(Integer.valueOf(newprice.getText()));
-		JOptionPane.showMessageDialog(null, "Successfully set the ticket price to $" + newprice.getText(), "Success",
-				JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void manage_passengers(Train t) {
