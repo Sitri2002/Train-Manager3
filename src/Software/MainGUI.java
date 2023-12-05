@@ -1156,7 +1156,7 @@ class LoginPanel extends JPanel {
 	public void ManageTrainPanel(Train t) {
 		JFrame manage_menu = new JFrame("Manage Train " + t.getTrainCode());
 		manage_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		manage_menu.setSize(470, 200);
+		manage_menu.setSize(470, 240);
 		manage_menu.setResizable(false);
 		manage_menu.setLocationRelativeTo(null);
 
@@ -1176,9 +1176,11 @@ class LoginPanel extends JPanel {
 		JButton add_route = new JButton("Add new route");
 		JButton view_train_status = new JButton("View train status");
 		JButton display_info = new JButton("Display train information");
+		JButton set_seat_amount = new JButton("Set seat amount");
 
 		update_status.setPreferredSize(new Dimension(200, 40));
 		set_ticket_price.setPreferredSize(new Dimension(200, 40));
+		set_seat_amount.setPreferredSize(new Dimension(200, 40));
 		manage_passengers.setPreferredSize(new Dimension(200, 40));
 		add_route.setPreferredSize(new Dimension(200, 40));
 		view_train_status.setPreferredSize(new Dimension(200, 40));
@@ -1186,6 +1188,7 @@ class LoginPanel extends JPanel {
 
 		pane1.add(update_status);
 		pane1.add(set_ticket_price);
+		pane1.add(set_seat_amount);
 		pane1.add(manage_passengers);
 		pane1.add(add_route);
 		pane1.add(view_train_status);
@@ -1200,6 +1203,12 @@ class LoginPanel extends JPanel {
 		set_ticket_price.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				set_ticket_price(t);
+			}
+		});
+		
+		set_seat_amount.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				set_seat_amount(t);
 			}
 		});
 
@@ -1227,6 +1236,10 @@ class LoginPanel extends JPanel {
 		});
 
 		manage_menu.setVisible(true);
+	}
+	
+	private void set_seat_amount(Train t) {
+		
 	}
 
 	private void display_info(Train t) {
