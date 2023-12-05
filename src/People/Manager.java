@@ -1,10 +1,11 @@
 package People;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import People.*;
 import Hardware.*;
 
-public class Manager extends Person {
+public class Manager extends Person implements Serializable {
 	private ArrayList<Train> trainsManaged;
 	
 	public Manager() {

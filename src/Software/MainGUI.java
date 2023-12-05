@@ -10,6 +10,7 @@ import People.Person;
 import Software.Data;
 
 import java.awt.*;
+import java.io.FileDescriptor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.RGBImageFilter;
@@ -21,6 +22,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.awt.image.FilteredImageSource;
 
@@ -69,16 +73,6 @@ public class MainGUI extends JFrame {
 		add(imagePanel, BorderLayout.SOUTH);
 	}
 
-//	private ImageIcon createImageIcon(String filename) {
-//		URL url = getClass().getClassLoader().getResource(filename);
-//		if (url != null) {
-//			return new ImageIcon(url);
-//		} else {
-//			System.err.println("Resource not found: " + filename);
-//			return null;
-//		}
-//	}
-
 	private ImageIcon makeWhitePixelsTransparent(ImageIcon icon) {
 		Image image = icon.getImage();
 
@@ -122,8 +116,11 @@ class LoginPanel extends JPanel {
 	public Manager m1 = new Manager();
 
 	public LoginPanel() {
-		File f = new File("./root/data.ser");
-		if (f.exists()) {
+		Path path1 = Paths.get("./root/data.ser");
+		Path path2 = Paths.get("./root/accounts.ser");
+
+		if (Files.exists(path1) && Files.exists(path2)) {
+			people_list = Person.loadData();
 			data1 = Data.loadData();
 			System.out.println("Loading data");
 		}
@@ -200,11 +197,19 @@ class LoginPanel extends JPanel {
 	private void login(Manager m) {
 		String username = usernameField.getText();
 		char[] password = passwordField.getPassword();
-
 		if (isValidLogin(username, new String(password))) {
 			JOptionPane.showMessageDialog(this, "Login Successful");
 			if (loggedin instanceof Passenger) {
 				Passenger p = (Passenger) loggedin;
+				for (Train t : data1.get_trains()) {
+					for (Passenger temp : t.getPassengers()) {
+						if (temp.getUsername().equals(p.getUsername())) {
+							p.setBookedRoute(temp.getBookedRoute());
+							p.setbookedTrain(t);
+						}
+					}
+				}
+				System.out.println(p.getBookedRoute());
 				PassengerMainMenu(m, username, p);
 			} else if (loggedin instanceof Manager) {
 				ManagerMainMenu();
@@ -291,7 +296,6 @@ class LoginPanel extends JPanel {
 						p.setEmail(email_str);
 						people_list.add(p);
 						passenger_list.add(p);
-
 						Passenger.saveData(people_list);
 
 						JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
@@ -328,23 +332,27 @@ class LoginPanel extends JPanel {
 
 	// find if username is already taken... needs to be unique
 	private boolean isValidUsername(String username) {
-//		people_list = Person.loadData();
-//
-//		for (int i = 0; i < people_list.size(); i++) {
-//			if (people_list.get(i).getUsername().equals(username)) {
-//				return false;
-//			}
-//		}
-		return true; // default case
+		Path path = Paths.get("./root/accounts.ser");
+		if (Files.exists(path)) {
+			people_list = Person.loadData();
+
+			for (int i = 0; i < people_list.size(); i++) {
+				if (people_list.get(i).getUsername().equals(username)) {
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return true;
+		}
 	}
 
 	// check if password is 8 or more characters
 	private boolean isValidPassword(String password) {
-//		people_list = Person.loadData();
-//		if (password.length() < 8) {
-//			return false;
-//		}
-		return true; // default case
+		if (password.length() < 8) {
+			return false;
+		}
+		return true;
 	}
 
 	// check if username and login are a valid match to the system
@@ -363,6 +371,7 @@ class LoginPanel extends JPanel {
 
 	// Passenger main menu stuff
 	private void PassengerMainMenu(Manager m, String name, Passenger p) {
+
 		JFrame main_menu = new JFrame("Train Reservation System");
 
 		main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -416,9 +425,6 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logout(logout);
-				Passenger.saveData(people_list);
-				Data.saveData(data1);
-				System.out.println("Logging out: Saving cache into main database.");
 			}
 		});
 
@@ -433,10 +439,6 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bookATrain(name, p);
-				Passenger.saveData(people_list);
-				Data.saveData(data1);
-				System.out.println("Book Train: Saved passenger booking data into their account");
-				System.out.println("Book Train: Saved passenger booking into system database");
 			}
 		});
 
@@ -451,10 +453,6 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cancelBooking(name, p);
-				Passenger.saveData(people_list);
-				Data.saveData(data1);
-				System.out.println("Cancel Train: Saved passenger cancellation data into their account");
-				System.out.println("Cancel Train: Saved passenger cancellation into system database");
 			}
 		});
 	}
@@ -476,16 +474,19 @@ class LoginPanel extends JPanel {
 					for (int j = 0; j < data1.get_trains().get(i).getRouteList().size(); j++) {
 						System.out.println(
 								"Departing from: " + data1.get_trains().get(i).getRouteList().get(j).getStartLocation()
-										+ " at " + data1.get_trains().get(i).getRouteList().get(j).getDepartureTime());
+										+ " at " + Route.timeDisplay(
+												data1.get_trains().get(i).getRouteList().get(j).getDepartureTime()));
 						System.out.println("Arriving at: "
 								+ data1.get_trains().get(i).getRouteList().get(j).getEndLocation() + " at "
-								+ data1.get_trains().get(i).getRouteList().get(j).getArrivalTime() + "\n");
+								+ Route.timeDisplay(data1.get_trains().get(i).getRouteList().get(j).getArrivalTime())
+								+ "\n");
 					}
 				}
 			}
 		} else {
 			System.out.println("No trains could not be found.");
 		}
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 	}
 
 	private void bookATrain(String name, Passenger p) {
@@ -667,14 +668,24 @@ class LoginPanel extends JPanel {
 	}
 
 	private void bookSeat(Passenger p, int tier, int finali, int finalj, JFrame frame) {
+		if (data1.get_trains().get(finali).getSeatAmount()[tier] <= 0) {
+			JOptionPane.showMessageDialog(null,
+					"There are no remaining " + tierString(tier) + " seats. Please choose a different seat tier.",
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		p.bookTrain(data1.get_trains().get(finali), data1.get_trains().get(finali).getRouteList().get(finalj), tier);
-
+		p.setBookedRoute(data1.get_trains().get(finali).getRouteList().get(finalj));
 		JOptionPane.showMessageDialog(null, "You have successfully booked the train to "
 				+ data1.get_trains().get(finali).getRouteList().get(finalj).getEndLocation() + " that departs at "
 				+ data1.get_trains().get(finali).getRouteList().get(finalj).getDepartureTime() + " for $"
 				+ data1.get_trains().get(finali).getRouteList().get(finalj).getPrice()
 						* data1.get_trains().get(finali).getSeatTier(tier)
 				+ ". Your seat tier is " + tierString(tier) + ".", "Booked train", JOptionPane.PLAIN_MESSAGE);
+		Passenger.saveData(people_list);
+		Data.saveData(data1);
+		System.out.println("Book Train: Saved passenger booking data into their account");
+		System.out.println("Book Train: Saved passenger booking into system database");
 		frame.dispose();
 	}
 
@@ -708,10 +719,15 @@ class LoginPanel extends JPanel {
 			yesButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					String start = p.getBookedRoute().getStartLocation();
+					String end = p.getBookedRoute().getEndLocation();
 					p.cancelBooking(t);
-					JOptionPane.showMessageDialog(null, "Booking from " + p.getBookedRoute().getStartLocation() + "->"
-							+ p.getBookedRoute().getEndLocation() + " canceled!");
+					JOptionPane.showMessageDialog(null, "Booking from " + start + "->" + end + " canceled!");
 					frame.dispose();
+					Passenger.saveData(people_list);
+					Data.saveData(data1);
+					System.out.println("Cancel Train: Saved passenger cancellation data into their account");
+					System.out.println("Cancel Train: Saved passenger cancellation into system database");
 				}
 			});
 
@@ -758,7 +774,7 @@ class LoginPanel extends JPanel {
 	}
 
 	private void viewBookings(String name, Passenger p) {
-		if (p.getbookedTrain() == null) {
+		if (p.getBookedRoute() == null) {
 			JOptionPane.showMessageDialog(null, "You have no current bookings.\n", "No bookings",
 					JOptionPane.ERROR_MESSAGE);
 		} else if (p != null) {
@@ -775,6 +791,7 @@ class LoginPanel extends JPanel {
 
 	// Manager train menu stuff
 	private void ManagerMainMenu() {
+
 		JFrame main_menu = new JFrame("Train Reservation System");
 		setLayout(new BorderLayout());
 
@@ -854,9 +871,6 @@ class LoginPanel extends JPanel {
 		logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout(logout);
-				Manager.saveData(people_list);
-				Data.saveData(data1);
-				System.out.println("Saving cache into main database.");
 			}
 		});
 
@@ -1326,11 +1340,11 @@ class LoginPanel extends JPanel {
 			int t3booked = 0;
 			for (Passenger p : t.getPassengers()) {
 				if (p.getSeatTier() == 0) {
-					t1++;
+					t1booked++;
 				} else if (p.getSeatTier() == 1) {
-					t2++;
+					t2booked++;
 				} else if (p.getSeatTier() == 2) {
-					t3++;
+					t3booked++;
 				}
 			}
 
@@ -1340,9 +1354,9 @@ class LoginPanel extends JPanel {
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			} else {
-				t.setSeatAmount(t1 - t1booked, 0);
-				t.setSeatAmount(t2 - t2booked, 1);
-				t.setSeatAmount(t3 - t3booked, 2);
+				t.setSeatAmount((t1 - t1booked), 0);
+				t.setSeatAmount((t2 - t2booked), 1);
+				t.setSeatAmount((t3 - t3booked), 2);
 				JOptionPane.showMessageDialog(null, "Seat amount has been changed.", "Success",
 						JOptionPane.PLAIN_MESSAGE);
 				return;
@@ -1365,6 +1379,7 @@ class LoginPanel extends JPanel {
 		JTextAreaOutputStream out = new JTextAreaOutputStream(outputArea);
 		System.setOut(new PrintStream(out));
 		t.trainDisplay();
+		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 
 	}
 

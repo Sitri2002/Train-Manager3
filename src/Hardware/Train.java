@@ -91,14 +91,22 @@ public class Train implements Serializable {
 	}
 
 	public void removePassenger(Passenger p) {
-		passengerList.remove(p);
+		int index = -1;
+		for (int i = 0; i < passengerList.size(); i++) {
+			if (passengerList.get(i).getUsername().equals(p.getUsername())) {
+				index = i;
+			}
+		}
+		if (index >= 0) {
+			passengerList.remove(index);
+		}
 	}
-	
+
 	public int[] getSeatAmount() {
 		return seatAmount;
 	}
-	
-	public void setSeatAmount(int amount , int i) {
+
+	public void setSeatAmount(int amount, int i) {
 		seatAmount[i] = amount;
 	}
 
@@ -254,15 +262,14 @@ public class Train implements Serializable {
 		String r = "";
 		if (tier == 0) {
 			r = "Economy";
-		}
-		else if (tier == 1) {
+		} else if (tier == 1) {
 			r = "Business";
-		}
-		else {
+		} else {
 			r = "First Class";
 		}
 		return r;
 	}
+
 	public void trainDisplay() {
 		System.out.println("Train " + trainCode + " information:");
 		System.out.println("Status: " + status);

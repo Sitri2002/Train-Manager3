@@ -1,28 +1,19 @@
 package People;
 
+import java.io.Serializable;
+
 import Hardware.Route;
 import Hardware.Train;
 
-public class Passenger extends Person {
+public class Passenger extends Person implements Serializable{
 	private Train bookedTrain;
-//	private int bookedTrainCode;		changed to train because its too hard to work with only train code and route.. unless you guys have a better way to implement
-	private Route bookedRoute;
+	private Route bookedRoute = null;
 	private int seatTier;
 	
 	public Passenger() {
-	//	setBookedTrainCode(0);
-		setBookedRoute(new Route());
 		seatTier = 0;
 	}
 	
-/*	public int getBookedTrainCode() {
-		return bookedTrainCode;
-	}
-
-	public void setBookedTrainCode(int bookedTrainCode) {
-		this.bookedTrainCode = bookedTrainCode;
-	} */
-
 	public Route getBookedRoute() {
 		return bookedRoute;
 	}
@@ -46,10 +37,10 @@ public class Passenger extends Person {
 		
 		for(Route r : train.getRouteList()) {
 			if(train.getRouteList().contains(route)) {
-				if(r == route) {
-					setBookedRoute(r);
+				if(r.equals(route)) {
+					bookedRoute = r;
 					seatTier = tier;
-					train.setSeatAmount(train.getSeatAmount()[tier]-1, tier);// change routelist to be only one route? : UPDATED... maybe - it is kind of hard to iterate trhough and match routes
+					train.setSeatAmount(train.getSeatAmount()[tier]-1, tier);
 				}
 		 }
 		}
@@ -69,8 +60,10 @@ public class Passenger extends Person {
 	
 	public void cancelBooking(Train train) {
 		train.removePassenger(this);
+		System.out.println(train.getPassengers().size());
 		train.setSeatAmount(train.getSeatAmount()[seatTier]+1, seatTier);
 		bookedTrain = null;
+		bookedRoute = null;
 	}
 	
 	public void changeSeatTier(int new_tier) {
