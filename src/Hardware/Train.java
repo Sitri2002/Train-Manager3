@@ -12,6 +12,7 @@ public class Train implements Serializable {
 
 	private int trainCode;
 	private double[] seatTiers = { 1, 1.5, 2 };
+	private int[] seatAmount = { 10, 10, 10 };
 	private String status;
 	private ArrayList<Route> routeList;
 	private ArrayList<Integer> schedule;
@@ -91,6 +92,14 @@ public class Train implements Serializable {
 
 	public void removePassenger(Passenger p) {
 		passengerList.remove(p);
+	}
+	
+	public int[] getSeatAmount() {
+		return seatAmount;
+	}
+	
+	public void setSeatAmount(int amount , int i) {
+		seatAmount[i] = amount;
 	}
 
 	public void addRoute(Route r) {
@@ -245,8 +254,11 @@ public class Train implements Serializable {
 		System.out.println("Train " + trainCode + " information:");
 		System.out.println("Status: " + status);
 		System.out.println("Economy tier seat price: " + seatTiers[0] * 100 + "% of route price.");
+		System.out.println("Economy seats remaining: " + seatAmount[0]);
 		System.out.println("Business tier seat price: " + seatTiers[1] * 100 + "% of route price.");
+		System.out.println("Business seats remaining: " + seatAmount[1]);
 		System.out.println("First Class tier seat price: " + seatTiers[2] * 100 + "% of route price.");
+		System.out.println("First Class seats remaining: " + seatAmount[2]);
 		System.out.println("");
 		System.out.println("All the current routes for train " + trainCode + ":");
 		for (Route r : routeList) {
