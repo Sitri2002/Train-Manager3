@@ -275,59 +275,70 @@ class LoginPanel extends JPanel {
 		// Check the result when OK is clicked
 		if (result == JOptionPane.OK_OPTION) {
 			String selectedValue = (String) comboBox.getSelectedItem();
-			if (selectedValue.equals("Passenger")) {
-
-					if (!isValidUsername(username_str)) {
-						JOptionPane.showMessageDialog(null,
-								"That username is already being used.\nPlease enter a different one.",
-								"Username already taken", JOptionPane.ERROR_MESSAGE);
-					}
-
-					else if (!isValidPassword(password_str)) {
-						JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
-								"Please enter a new password", JOptionPane.ERROR_MESSAGE);
-					} else {
-						Passenger p = new Passenger();
-						p.setName(name_str);
-						p.setUsername(username_str);
-						p.setPassword(password_str);
-						p.setEmail(email_str);
-						people_list.add(p);
-						passenger_list.add(p);
-
-						Passenger.saveData(people_list);
-
-						JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
-					}
-				} else if (selectedValue.equals("Manager")) {
-						if (!isValidUsername(username_str)) {
-							JOptionPane.showMessageDialog(null,
-									"That username is already being used.\nPlease enter a different one.",
-									"Username already taken", JOptionPane.ERROR_MESSAGE);
+			
+			// check if all fields are not empty
+			if (isEmpty(username) || isEmpty(password) || isEmpty(name)
+                    || isEmpty(email) || isEmpty(password)) {
+                JOptionPane.showMessageDialog(null, "Error: Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            }
+			
+			else {
+					if (selectedValue.equals("Passenger")) {
+		
+							if (!isValidUsername(username_str)) {
+								JOptionPane.showMessageDialog(null,
+										"That username is already being used.\nPlease enter a different one.",
+										"Username already taken", JOptionPane.ERROR_MESSAGE);
+							}
+		
+							else if (!isValidPassword(password_str)) {
+								JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
+										"Please enter a new password", JOptionPane.ERROR_MESSAGE);
+							} else {
+								Passenger p = new Passenger();
+								p.setName(name_str);
+								p.setUsername(username_str);
+								p.setPassword(password_str);
+								p.setEmail(email_str);
+								people_list.add(p);
+								passenger_list.add(p);
+		
+								Passenger.saveData(people_list);
+		
+								JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+							}
 						}
-
-						else if (!isValidPassword(password_str)) {
-							JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
-									"Please enter a new password", JOptionPane.ERROR_MESSAGE);
-						} else {
-							Manager m = new Manager();
-							m.setName(name_str);
-							m.setUsername(username_str);
-							m.setPassword(password_str);
-							m.setEmail(email_str);
-							people_list.add(m);
-							manager_list.add(m);
-
-							Manager.saveData(people_list);
-
-							JOptionPane.showMessageDialog(null,
-									"Created a " + selectedValue + " account for " + name_str);
-						}
+			
+					else if (selectedValue.equals("Manager")) {
+								if (!isValidUsername(username_str)) {
+									JOptionPane.showMessageDialog(null,
+											"That username is already being used.\nPlease enter a different one.",
+											"Username already taken", JOptionPane.ERROR_MESSAGE);
+								}
+		
+								else if (!isValidPassword(password_str)) {
+									JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
+											"Please enter a new password", JOptionPane.ERROR_MESSAGE);
+								} else {
+									Manager m = new Manager();
+									m.setName(name_str);
+									m.setUsername(username_str);
+									m.setPassword(password_str);
+									m.setEmail(email_str);
+									people_list.add(m);
+									manager_list.add(m);
+		
+									Manager.saveData(people_list);
+		
+									JOptionPane.showMessageDialog(null,
+											"Created a " + selectedValue + " account for " + name_str);
+								}
+							}
 					}
 				}
 			}
 
-	// find is username is already taken... needs to be unique
+	// find if username is already taken... needs to be unique
 	private boolean isValidUsername(String username) {
 		people_list = Person.loadData();
 
@@ -678,11 +689,7 @@ class LoginPanel extends JPanel {
 		confirmationFrame.setLocationRelativeTo(null);
 		confirmationFrame.setVisible(true);
 	}
-
-	private static boolean isEmpty(JTextField textField) {
-		return textField.getText().trim().isEmpty();
-	}
-
+	
 	private void viewBookings(String name, Passenger p) {
 		if (p.getbookedTrain() == null) {
 			JOptionPane.showMessageDialog(null, "You have no current bookings.\n", "No bookings",
@@ -1492,6 +1499,10 @@ class LoginPanel extends JPanel {
 	// Manager page stuff ends
 
 	// Utility functions
+	private static boolean isEmpty(JTextField textField) {
+        return textField.getText().trim().isEmpty();
+    }
+	
 	private Passenger findPassenger(String name) {
 		for (Passenger p : passenger_list) {
 			if (p.getName().equalsIgnoreCase(name)) {
