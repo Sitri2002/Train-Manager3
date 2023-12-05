@@ -276,10 +276,8 @@ class LoginPanel extends JPanel {
 		if (result == JOptionPane.OK_OPTION) {
 			String selectedValue = (String) comboBox.getSelectedItem();
 			if (selectedValue.equals("Passenger")) {
-				selectedValue = (String) comboBox.getSelectedItem();
 
-				if (selectedValue.equals("Passenger")) {
-					if (!isValidUsername(name_str)) {
+					if (!isValidUsername(username_str)) {
 						JOptionPane.showMessageDialog(null,
 								"That username is already being used.\nPlease enter a different one.",
 								"Username already taken", JOptionPane.ERROR_MESSAGE);
@@ -302,8 +300,7 @@ class LoginPanel extends JPanel {
 						JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
 					}
 				} else if (selectedValue.equals("Manager")) {
-					if (selectedValue.equals("Passenger")) {
-						if (!isValidUsername(name_str)) {
+						if (!isValidUsername(username_str)) {
 							JOptionPane.showMessageDialog(null,
 									"That username is already being used.\nPlease enter a different one.",
 									"Username already taken", JOptionPane.ERROR_MESSAGE);
@@ -329,8 +326,6 @@ class LoginPanel extends JPanel {
 					}
 				}
 			}
-		}
-	}
 
 	// find is username is already taken... needs to be unique
 	private boolean isValidUsername(String username) {
