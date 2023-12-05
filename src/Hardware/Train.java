@@ -26,6 +26,7 @@ public class Train implements Serializable {
 		passengerList = new ArrayList<Passenger>();
 	}
 
+	// getters and setters
 	public int getTrainCode() {
 		return trainCode;
 	}
@@ -66,6 +67,7 @@ public class Train implements Serializable {
 		return passengerList;
 	}
 
+	// printing functions
 	public void printRouteList() {
 		for (int i = 0; i < routeList.size(); i++) {
 			System.out.println(routeList.get(i).getStartLocation() + " -> " + routeList.get(i).getEndLocation());
@@ -85,7 +87,8 @@ public class Train implements Serializable {
 			System.out.println(passengerList.get(i).getName());
 		}
 	}
-
+	
+	// edits the list of passengers on this train
 	public void addPassenger(Passenger p) {
 		passengerList.add(p);
 	}
@@ -102,6 +105,7 @@ public class Train implements Serializable {
 		}
 	}
 
+	// used for calculating seat tier price
 	public int[] getSeatAmount() {
 		return seatAmount;
 	}
@@ -110,6 +114,7 @@ public class Train implements Serializable {
 		seatAmount[i] = amount;
 	}
 
+	// uses routeValid() to check if a route is possible first, then adds it
 	public void addRoute(Route r) {
 		ArrayList<Route> temp = new ArrayList<>(routeList);
 		temp.add(r);

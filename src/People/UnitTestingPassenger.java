@@ -89,7 +89,7 @@ class UnitTestingPassenger {
 		
 		testTrain.addRoute(testRoute);
 		
-		p.bookTrain(testTrain, testRoute);
+		p.bookTrain(testTrain, testRoute, 2);
 		
 		assertEquals(testTrain, p.getbookedTrain());
 		assertEquals(testRoute, p.getBookedRoute());

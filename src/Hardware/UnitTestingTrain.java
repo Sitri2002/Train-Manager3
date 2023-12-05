@@ -9,18 +9,19 @@ import org.junit.jupiter.api.Test;
 import People.Passenger;
 
 class UnitTestingTrain {
+
 	@Test
 	void testTrain() {
 		Train train = new Train();
 		ArrayList<Route> r = new ArrayList<Route>();
 		ArrayList<Integer> s = new ArrayList<Integer>();
-		int[] seats = new int[3];
 		ArrayList<Passenger> plist = new ArrayList<Passenger>();
 		
 		// testing all getters
+		assertEquals(0, train.getTrainCode());
+		assertEquals("in the station", train.getStatus());
 		assertEquals(r, train.getRouteList());
 		assertEquals(s, train.getSchedule());
-		assertEquals(seats[0], train.getSeatTier(0));
 		assertEquals(plist, train.getPassengers());
 	}
 
@@ -47,20 +48,11 @@ class UnitTestingTrain {
 	@Test
 	void testSetSeatTiers() {
 		Train train = new Train();
-		int[] array = new int[3];
-		int seat1 = 301;
-		int seat2 = 303;
-		int seat3 = 305;
+		double seat1 = 37;
+
+		train.setSeat(seat1, 1);
 		
-		array[0] = seat1;
-		array[1] = seat2;
-		array[2] = seat3;
-		
-		train.setSeatTiers(array);
-		
-		assertEquals(array[0], train.getSeatTier(0));
-		assertEquals(array[1], train.getSeatTier(1));
-		assertEquals(array[2], train.getSeatTier(2));
+		assertEquals(37, train.getSeatTier(1));
 	}
 
 	@Test

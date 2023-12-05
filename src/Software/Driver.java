@@ -41,7 +41,7 @@ public class Driver {
 		p1.setUsername(passenger1_username);
 		p1.setEmail(passenger1_email);
 		
-		p1.bookTrain(t1, t1.getRouteList().get(0));
+		p1.bookTrain(t1, t1.getRouteList().get(0), 2);
 		
 		System.out.println("Printing the booking details for p1:");
 		
@@ -59,7 +59,7 @@ public class Driver {
 		p2.setUsername(passenger2_username);
 		p2.setEmail(passenger2_email);
 		
-		p2.bookTrain(t1, t1.getRouteList().get(0));
+		p2.bookTrain(t1, t1.getRouteList().get(0), 1);
 		
 		System.out.println("Printing passengers:");
 		t1.printPassengers();

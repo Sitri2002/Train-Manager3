@@ -22,6 +22,7 @@ public abstract class Person implements Serializable {
 		
 	}
 	
+	// basic getters and setters for Person (Manager and Passenger are subclasses)
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -54,6 +55,7 @@ public abstract class Person implements Serializable {
 		return email;
 	}
 	
+	// load and saveData functions are used for serialization of data in the system
 	public static void saveData(ArrayList<Person> p){
 		System.out.println("Saving");
 		FileOutputStream fileOut = null;

@@ -32,6 +32,7 @@ public class MainGUI extends JFrame {
 
 	public MainGUI() {
 
+		// Welcome page GUI graphics
 		setTitle("WILDCAT RAILWAY");
 		setSize(1000, 700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,6 +74,7 @@ public class MainGUI extends JFrame {
 		add(imagePanel, BorderLayout.SOUTH);
 	}
 
+	// used to make the png image have a transparent background
 	private ImageIcon makeWhitePixelsTransparent(ImageIcon icon) {
 		Image image = icon.getImage();
 
@@ -92,7 +94,7 @@ public class MainGUI extends JFrame {
 
 		return new ImageIcon(modifiedImage);
 	}
-
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -104,6 +106,7 @@ public class MainGUI extends JFrame {
 	}
 }
 
+// login panel for both manager and passenger
 class LoginPanel extends JPanel {
 
 	public Data data1 = new Data();
@@ -116,6 +119,7 @@ class LoginPanel extends JPanel {
 	public Manager m1 = new Manager();
 
 	public LoginPanel() {
+		// serialization stuff
 		Path path1 = Paths.get("./root/data.ser");
 		Path path2 = Paths.get("./root/accounts.ser");
 
@@ -128,6 +132,7 @@ class LoginPanel extends JPanel {
 			System.out.println("Loading data");
 		}
 
+		// graphics for login page
 		setLayout(new BorderLayout());
 		setOpaque(false);
 
@@ -182,10 +187,10 @@ class LoginPanel extends JPanel {
 
 		add(generalPanel);
 
+		// actions for each different button
 		loginButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
 				login(m1);
 			}
 		});
@@ -198,6 +203,7 @@ class LoginPanel extends JPanel {
 		});
 	}
 
+	// "login" button logic 
 	private void login(Manager m) {
 		String username = usernameField.getText();
 		char[] password = passwordField.getPassword();
@@ -225,15 +231,12 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// "create account" button logic
 	private void createAccount() {
-		// JOptionPane.showMessageDialog(this, "Create Account functionality not
-		// implemented yet.");
 		String[] items = { "Passenger", "Manager" };
 
-		// Create a JComboBox with the array of items
 		JComboBox<String> comboBox = new JComboBox<>(items);
 
-		// Create a custom JPanel to hold the JComboBox
 		JPanel create_account_panel = new JPanel(new GridLayout(5, 1));
 		create_account_panel.add(new JLabel("Select account type:"));
 		create_account_panel.add(comboBox);
@@ -260,7 +263,6 @@ class LoginPanel extends JPanel {
 		create_account_panel.add(emaillabel);
 		create_account_panel.add(email);
 
-		// Show the JOptionPane with the custom panel
 		int result = JOptionPane.showOptionDialog(null, create_account_panel, "Create New Account",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
@@ -270,7 +272,7 @@ class LoginPanel extends JPanel {
 		String email_str = email.getText();
 		String password_str = String.valueOf(password_char);
 
-		// Check the result when OK is clicked
+		// check the result when OK is clicked
 		if (result == JOptionPane.OK_OPTION) {
 			String selectedValue = (String) comboBox.getSelectedItem();
 
@@ -280,19 +282,21 @@ class LoginPanel extends JPanel {
 						JOptionPane.ERROR_MESSAGE);
 			}
 
-			else {
+			else { // if passenger option from drop down menu is selected
 				if (selectedValue.equals("Passenger")) {
 
+					// checks if username is not already in use
 					if (!isValidUsername(username_str)) {
 						JOptionPane.showMessageDialog(null,
 								"That username is already being used.\nPlease enter a different one.",
 								"Username already taken", JOptionPane.ERROR_MESSAGE);
 					}
 
+					// valid password must be at least 8 characters long - exception logic
 					else if (!isValidPassword(password_str)) {
 						JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
 								"Please enter a new password", JOptionPane.ERROR_MESSAGE);
-					} else {
+					} else { // creating passenger account if exceptions are passed
 						Passenger p = new Passenger();
 						p.setName(name_str);
 						p.setUsername(username_str);
@@ -306,17 +310,18 @@ class LoginPanel extends JPanel {
 					}
 				}
 
-				else if (selectedValue.equals("Manager")) {
-					if (!isValidUsername(username_str)) {
+				else if (selectedValue.equals("Manager")) {  // if manager option from drop down menu is selected
+					if (!isValidUsername(username_str)) { // checks if username is not already in use
 						JOptionPane.showMessageDialog(null,
 								"That username is already being used.\nPlease enter a different one.",
 								"Username already taken", JOptionPane.ERROR_MESSAGE);
 					}
 
+					// valid password must be at least 8 characters long - exception logic
 					else if (!isValidPassword(password_str)) {
 						JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
 								"Please enter a new password", JOptionPane.ERROR_MESSAGE);
-					} else {
+					} else { // creating manager account if exceptions are passed
 						Manager m = new Manager();
 						m.setName(name_str);
 						m.setUsername(username_str);
@@ -469,6 +474,7 @@ class LoginPanel extends JPanel {
 		});
 	}
 
+	// displays train details
 	private void viewAvailableTrains(Manager m, String name) {
 		redirectToGUI();
 		System.out.println("Viewing available trains:\n");
@@ -501,6 +507,7 @@ class LoginPanel extends JPanel {
 		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 	}
 
+	// book a train GUI and logic if "book train" option selected from passenger home page
 	private void bookATrain(String name, Passenger p) {
 		if (p.getbookedTrain() != null) {
 			JOptionPane.showMessageDialog(null, "You already have a train booked", "Error", JOptionPane.ERROR_MESSAGE);
@@ -667,6 +674,7 @@ class LoginPanel extends JPanel {
 
 	}
 
+	// 1st, 2nd, 3rd class seat logic stuff
 	private static String tierString(int tier) {
 		String tierStr = "";
 		if (tier == 0) {
@@ -679,6 +687,7 @@ class LoginPanel extends JPanel {
 		return tierStr;
 	}
 
+	// booking seat GUI and logic for "book seat" option in passenger 
 	private void bookSeat(Passenger p, int tier, int finali, int finalj, JFrame frame) {
 		if (data1.get_trains().get(finali).getSeatAmount()[tier] <= 0) {
 			JOptionPane.showMessageDialog(null,
@@ -701,6 +710,7 @@ class LoginPanel extends JPanel {
 		frame.dispose();
 	}
 
+	// checker function
 	private Boolean isThereRouteAvailable(String dep, String dest) {
 		for (Train t : m1.getTrainsManaged()) {
 			for (Route r : t.getRouteList()) {
@@ -712,6 +722,7 @@ class LoginPanel extends JPanel {
 		return false;
 	}
 
+	// // cancel booking GUI and logic if "cancel booking" option selected from passenger home page
 	private void cancelBooking(String name, Passenger p) {
 		Train t = p.getbookedTrain();
 		if (p.getbookedTrain() == null) {
@@ -761,6 +772,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// success in booking GUI
 	private void showConfirmationGUI(Route selectedRoute, Passenger passenger, Train t, int tier) {
 		JFrame confirmationFrame = new JFrame("Confirmation");
 		confirmationFrame.setSize(300, 150);
@@ -785,6 +797,7 @@ class LoginPanel extends JPanel {
 		confirmationFrame.setVisible(true);
 	}
 
+	// passenger view bookings option GUI stuff
 	private void viewBookings(String name, Passenger p) {
 		if (p.getBookedRoute() == null) {
 			JOptionPane.showMessageDialog(null, "You have no current bookings.\n", "No bookings",
@@ -800,7 +813,9 @@ class LoginPanel extends JPanel {
 		}
 	}
 	// passenger menu stuff ends
-
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	// Manager train menu stuff
 	private void ManagerMainMenu() {
 
@@ -901,6 +916,7 @@ class LoginPanel extends JPanel {
 		});
 	}
 
+	// manage route button selection logic and GUI
 	private void manage_route() {
 		ArrayList<String> options = new ArrayList<String>();
 
@@ -927,6 +943,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// change route price button selection logic and GUI from manage route page
 	private void change_route_price(Route t) {
 		JTextField price = new JTextField();
 		Object[] input = { "New price", price };
@@ -952,6 +969,7 @@ class LoginPanel extends JPanel {
 
 	}
 
+	// change route time button selection logic and GUI from manage route page
 	private void change_route_time(Route t) {
 		JTextField depart = new JTextField();
 		JTextField arrive = new JTextField();
@@ -981,6 +999,7 @@ class LoginPanel extends JPanel {
 
 	}
 
+	// GUI stuff for specific manage route panel
 	private void routeManagePanel(Route r) {
 		JFrame route_menu = new JFrame("Commands for route " + r.getStartLocation() + " - " + r.getEndLocation() + ": "
 				+ Route.timeDisplay(r.getDepartureTime()) + " - " + Route.timeDisplay(r.getArrivalTime()));
@@ -1031,6 +1050,7 @@ class LoginPanel extends JPanel {
 		route_menu.setVisible(true);
 	}
 
+	// for redirecting system.out to GUI panel
 	class JTextAreaOutputStream extends OutputStream {
 		private final JTextArea destination;
 
@@ -1058,6 +1078,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// displays route details GUI stuff
 	private void routeInfoDisplay(Route r) {
 		JTextArea outputArea;
 		JFrame popInfo = new JFrame();
@@ -1075,6 +1096,7 @@ class LoginPanel extends JPanel {
 		r.routeDisplay();
 	}
 
+	// create route option logic and GUI from manager home page "create route" button selection
 	private void create_route() {
 		JTextField startLoc = new JTextField();
 		JTextField endLoc = new JTextField();
@@ -1138,6 +1160,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// logout button logic
 	private void logout(JButton logoutbutton) {
 		JFrame mainMenuFrame = (JFrame) SwingUtilities.getRoot(logoutbutton);
 		mainMenuFrame.dispose();
@@ -1145,6 +1168,7 @@ class LoginPanel extends JPanel {
 		maingui.setVisible(true);
 	}
 
+	// create train option logic and GUI from manager home page "create train" button selection
 	private void create_train() {
 		JTextField traincode = new JTextField();
 
@@ -1186,6 +1210,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// cancel train option logic and GUI from manager home page "cancel train" button selection
 	private void cancel_train() {
 		ArrayList<String> options = new ArrayList<String>();
 
@@ -1212,6 +1237,8 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+
+	// manage train option - logic and GUI from manager home page "manage train" button selection
 	private void manage_train() {
 		// implement later
 		ArrayList<String> options = new ArrayList<String>();
@@ -1236,6 +1263,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
+	// specific manage train panel GUi stuff and logic for buttons
 	public void ManageTrainPanel(Train t) {
 		JFrame manage_menu = new JFrame("Manage Train " + t.getTrainCode());
 		manage_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -1327,6 +1355,7 @@ class LoginPanel extends JPanel {
 		manage_menu.setVisible(true);
 	}
 
+	// all of manage train's button's different logic 
 	private void set_seat_amount(Train t) {
 		JTextField tier1 = new JTextField();
 		JTextField tier2 = new JTextField();
@@ -1655,12 +1684,15 @@ class LoginPanel extends JPanel {
 				"Train Status", JOptionPane.PLAIN_MESSAGE);
 	}
 	// Manager page stuff ends
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	// Utility functions
 	private static boolean isEmpty(JTextField textField) {
 		return textField.getText().trim().isEmpty();
 	}
 
+	// more checker functions - no longer used 
 	private Passenger findPassenger(String name) {
 		for (Passenger p : passenger_list) {
 			if (p.getName().equalsIgnoreCase(name)) {
@@ -1690,6 +1722,7 @@ class LoginPanel extends JPanel {
 		return null;
 	}
 
+	// another method for redirecting output stream to GUI JText instead of console
 	private void redirectToGUI() {
 		JFrame window = new JFrame("Viewing Available Trains");
 		window.setSize(700, 800);

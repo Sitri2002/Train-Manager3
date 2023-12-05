@@ -14,7 +14,7 @@ public class Route implements Serializable {
 	private int price;
 	private ArrayList<Passenger> passengerList;
 	
-
+	// constructor
 	public Route() {
 		startingLocation = null;
 		endLocation = null;
@@ -24,6 +24,7 @@ public class Route implements Serializable {
 		setPassengerList(new ArrayList<Passenger>());
 	}
 	
+	// getters and setters
 	public void setStartLocation(String location) {
 		startingLocation = location;
 	}
@@ -72,6 +73,7 @@ public class Route implements Serializable {
 		this.passengerList = passengerList;
 	}
 	
+	// calculates the time it takes to complete a specific route
 	public double getDuration() {
 		double duration = 0;
 		
@@ -85,6 +87,7 @@ public class Route implements Serializable {
 		return duration;
 	}
 	
+	// various printing functions
 	public String printRoute() {
 		return(this.getStartLocation() + " -> " + this.getEndLocation() + " \t\tDeparting at: " + this.getDepartureTime() + " \t\tArriving at: " + this.getArrivalTime());
 	}
@@ -101,6 +104,7 @@ public class Route implements Serializable {
 		}
 	}
 	
+	// converting to hours and minutes from military time
 	public static String timeDisplay(int time) {
 		String r = "";
 		int hour = time/100;

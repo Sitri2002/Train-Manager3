@@ -10,6 +10,9 @@ import java.io.Serializable;
 import Hardware.*;
 import People.*;
 
+/* this file is used to save train and routes data in the system so we can easily access them in our
+   main GUI file. Serialization of data occurs here for trains and routes.*/
+
 public class Data implements Serializable{
 	public ArrayList<Train> trains;
 	public ArrayList<Route> routes;
