@@ -121,7 +121,9 @@ class LoginPanel extends JPanel {
 	public Manager m1 = new Manager();
 
 	public LoginPanel() {
-		data1 = Data.loadData();
+		if(data1 != null) {
+			data1 = Data.loadData();
+		}
 		
 		setLayout(new BorderLayout());
 		setOpaque(false);
