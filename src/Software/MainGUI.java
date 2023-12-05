@@ -110,7 +110,8 @@ public class MainGUI extends JFrame {
 }
 
 class LoginPanel extends JPanel {
-	public static Data data1 = new Data();
+	public Data data1 = new Data();
+	
 	public ArrayList<Person> people_list = new ArrayList<Person>();
 	public ArrayList<Passenger> passenger_list = new ArrayList<Passenger>();
 	public ArrayList<Manager> manager_list = new ArrayList<Manager>();
@@ -120,25 +121,8 @@ class LoginPanel extends JPanel {
 	public Manager m1 = new Manager();
 
 	public LoginPanel() {
-		// initializing m1 to test - can change to a driver that we pass into the GUI
-		// file or from data.java
-		/*
-		 * m1.createTrain(113); m1.createTrain(227); m1.createTrain(331);
-		 * m1.createRoute("Bend", "Portland", 1700, 1930, 45);
-		 * m1.addRouteToTrain(m1.getTrainsManaged().get(0), m1.createRoute("Tucson",
-		 * "Phoenix", 1200, 1400, 40)); m1.addRouteToTrain(m1.getTrainsManaged().get(1),
-		 * m1.createRoute("Tucson", "Phoenix", 1200, 1400, 40));
-		 * m1.addRouteToTrain(m1.getTrainsManaged().get(2), m1.createRoute("Tucson",
-		 * "Phoenix", 1200, 1400, 40)); m1.addRouteToTrain(m1.getTrainsManaged().get(0),
-		 * m1.createRoute("Bend", "Portland", 1700, 1930, 45));
-		 * m1.addRouteToTrain(m1.getTrainsManaged().get(0), m1.createRoute("Bend",
-		 * "Portland", 1300, 1430, 45));
-		 * m1.addRouteToTrain(m1.getTrainsManaged().get(0), m1.createRoute("Bend",
-		 * "Portland", 900, 1100, 45));
-		 * 
-		 * manager_list.add(m1);
-		 */
-
+		data1 = Data.loadData();
+		
 		setLayout(new BorderLayout());
 		setOpaque(false);
 
@@ -441,6 +425,8 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bookATrain(name, p);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
@@ -455,6 +441,8 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cancelBooking(name, p);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 	}
@@ -837,36 +825,48 @@ class LoginPanel extends JPanel {
 		manage_train.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manage_train();
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		cancel_train.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancel_train();
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		create_new_train.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				create_train();
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout(logout);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		manage_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manage_route();
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		create_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				create_route();
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 	}
@@ -978,12 +978,16 @@ class LoginPanel extends JPanel {
 		change_route_price.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				change_route_price(r);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		change_route_time.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				change_route_time(r);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
@@ -1177,27 +1181,6 @@ class LoginPanel extends JPanel {
 			JOptionPane.showMessageDialog(null, "Successfully cancelled train " + traincode, "Success",
 					JOptionPane.PLAIN_MESSAGE);
 		}
-		/*
-		 * JTextField traincode = new JTextField();
-		 * 
-		 * Object[] inputFields = {"Train code:", traincode};
-		 * 
-		 * int option = JOptionPane.showConfirmDialog(null, inputFields, "Create Train",
-		 * JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		 * 
-		 * String code_str = traincode.getText();
-		 * 
-		 * if (option == JOptionPane.OK_OPTION) { int index = -1; for(int i = 0; i <
-		 * data1.get_trains().size(); i++) { if
-		 * (data1.get_trains().get(i).getTrainCode() == Integer.valueOf(code_str)) {
-		 * index = i; } } if(index == -1) { String error_message = "Train not found";
-		 * JOptionPane.showMessageDialog(null, error_message, "Error",
-		 * JOptionPane.ERROR_MESSAGE); return; } else {
-		 * data1.get_trains().remove(data1.get_trains().get(index)); String success_msg
-		 * = "Successfully removed train " + code_str;
-		 * JOptionPane.showMessageDialog(null, success_msg, "Success",
-		 * JOptionPane.PLAIN_MESSAGE); } }
-		 */
 	}
 
 	private void manage_train() {
@@ -1268,12 +1251,16 @@ class LoginPanel extends JPanel {
 		update_status.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				update_status(t);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		set_ticket_price.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				set_ticket_price(t);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
@@ -1286,12 +1273,16 @@ class LoginPanel extends JPanel {
 		manage_passengers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manage_passengers(t);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
 		add_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				add_route(t);
+				Data.saveData(data1);
+				System.out.println("Saved data");
 			}
 		});
 
