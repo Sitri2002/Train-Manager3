@@ -119,9 +119,12 @@ class LoginPanel extends JPanel {
 		Path path1 = Paths.get("./root/data.ser");
 		Path path2 = Paths.get("./root/accounts.ser");
 
-		if (Files.exists(path1) && Files.exists(path2)) {
-			people_list = Person.loadData();
+		if (Files.exists(path1)) {
 			data1 = Data.loadData();
+			System.out.println("Loading data");
+		}
+		if (Files.exists(path2)) {
+			people_list = Person.loadData();
 			System.out.println("Loading data");
 		}
 
@@ -182,6 +185,7 @@ class LoginPanel extends JPanel {
 		loginButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				login(m1);
 			}
 		});
@@ -357,16 +361,24 @@ class LoginPanel extends JPanel {
 
 	// check if username and login are a valid match to the system
 	private boolean isValidLogin(String username, String password) {
-		people_list = Person.loadData();
+		Path path = Paths.get("./root/accounts.ser"); 
+		if (Files.exists(path)) {
+			people_list = Person.loadData();
 
-		for (int i = 0; i < people_list.size(); i++) {
-			if (people_list.get(i).getUsername().equals(username)
-					&& people_list.get(i).getPassword().equals(password)) {
-				loggedin = people_list.get(i);
-				return true;
+			for (int i = 0; i < people_list.size(); i++) {
+				if (people_list.get(i).getUsername().equals(username)
+						&& people_list.get(i).getPassword().equals(password)) {
+					loggedin = people_list.get(i);
+					return true;
+				}
 			}
+			return false; // default case
 		}
-		return false; // default case
+		else {
+			JOptionPane.showMessageDialog(null, "There are no accounts on the database yet. Create a new account before logging in.", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		
 	}
 
 	// Passenger main menu stuff
