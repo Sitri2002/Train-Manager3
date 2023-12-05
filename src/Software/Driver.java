@@ -41,7 +41,7 @@ public class Driver {
 		p1.setUsername(passenger1_username);
 		p1.setEmail(passenger1_email);
 		
-		p1.bookTrain(t1, t1.getRouteList().get(0));
+		p1.bookTrain(t1, t1.getRouteList().get(0), 1); // changed to add seat tier in parameters
 		
 		System.out.println("Printing the booking details for p1:");
 		
