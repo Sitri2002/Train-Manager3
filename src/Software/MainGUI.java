@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.RGBImageFilter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -110,8 +111,8 @@ public class MainGUI extends JFrame {
 }
 
 class LoginPanel extends JPanel {
+
 	public Data data1 = new Data();
-	
 	public ArrayList<Person> people_list = new ArrayList<Person>();
 	public ArrayList<Passenger> passenger_list = new ArrayList<Passenger>();
 	public ArrayList<Manager> manager_list = new ArrayList<Manager>();
@@ -121,10 +122,12 @@ class LoginPanel extends JPanel {
 	public Manager m1 = new Manager();
 
 	public LoginPanel() {
-		if(data1 != null) {
+		File f = new File("./root/data.ser");
+		if (f.exists()) {
 			data1 = Data.loadData();
+			System.out.println("Loading data");
 		}
-		
+
 		setLayout(new BorderLayout());
 		setOpaque(false);
 
@@ -413,6 +416,9 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				logout(logout);
+				Passenger.saveData(people_list);
+				Data.saveData(data1);
+				System.out.println("Logging out: Saving cache into main database.");
 			}
 		});
 
@@ -427,8 +433,10 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				bookATrain(name, p);
+				Passenger.saveData(people_list);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Book Train: Saved passenger booking data into their account");
+				System.out.println("Book Train: Saved passenger booking into system database");
 			}
 		});
 
@@ -443,8 +451,10 @@ class LoginPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				cancelBooking(name, p);
+				Passenger.saveData(people_list);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Cancel Train: Saved passenger cancellation data into their account");
+				System.out.println("Cancel Train: Saved passenger cancellation into system database");
 			}
 		});
 	}
@@ -566,8 +576,8 @@ class LoginPanel extends JPanel {
 										+ "<br>Business seat: $"
 										+ data1.get_trains().get(i).getRouteList().get(j).getPrice()
 												* data1.get_trains().get(i).getSeatTier(1)
-										+ "<br>Business seat remaining: "
-										+ data1.get_trains().get(i).getSeatAmount()[1] + "<br> First Class seat: $"
+										+ "<br>Business seat remaining: " + data1.get_trains().get(i).getSeatAmount()[1]
+										+ "<br> First Class seat: $"
 										+ data1.get_trains().get(i).getRouteList().get(j).getPrice()
 												* data1.get_trains().get(i).getSeatTier(2)
 										+ "<br>First Class seat remaining: "
@@ -643,16 +653,14 @@ class LoginPanel extends JPanel {
 		}
 
 	}
-	
+
 	private static String tierString(int tier) {
 		String tierStr = "";
 		if (tier == 0) {
 			tierStr = "Economy";
-		}
-		else if (tier == 1) {
+		} else if (tier == 1) {
 			tierStr = "Business";
-		}
-		else {
+		} else {
 			tierStr = "First Class";
 		}
 		return tierStr;
@@ -660,15 +668,13 @@ class LoginPanel extends JPanel {
 
 	private void bookSeat(Passenger p, int tier, int finali, int finalj, JFrame frame) {
 		p.bookTrain(data1.get_trains().get(finali), data1.get_trains().get(finali).getRouteList().get(finalj), tier);
-		
-		JOptionPane.showMessageDialog(null,
-				"You have successfully booked the train to "
-						+ data1.get_trains().get(finali).getRouteList().get(finalj).getEndLocation()
-						+ " that departs at "
-						+ data1.get_trains().get(finali).getRouteList().get(finalj).getDepartureTime() + " for $"
-						+ data1.get_trains().get(finali).getRouteList().get(finalj).getPrice()
-								* data1.get_trains().get(finali).getSeatTier(tier) + ". Your seat tier is " + tierString(tier) + ".",
-				"Booked train", JOptionPane.PLAIN_MESSAGE);
+
+		JOptionPane.showMessageDialog(null, "You have successfully booked the train to "
+				+ data1.get_trains().get(finali).getRouteList().get(finalj).getEndLocation() + " that departs at "
+				+ data1.get_trains().get(finali).getRouteList().get(finalj).getDepartureTime() + " for $"
+				+ data1.get_trains().get(finali).getRouteList().get(finalj).getPrice()
+						* data1.get_trains().get(finali).getSeatTier(tier)
+				+ ". Your seat tier is " + tierString(tier) + ".", "Booked train", JOptionPane.PLAIN_MESSAGE);
 		frame.dispose();
 	}
 
@@ -759,10 +765,9 @@ class LoginPanel extends JPanel {
 			/*
 			 * redirectToGUI(); System.out.println("Viewing bookings..."); p.viewBooking();
 			 */
-			JOptionPane.showMessageDialog(null,
-					"Your booking is currently " + p.getBookedRoute().getStartLocation() + "->"
-							+ p.getBookedRoute().getEndLocation() + " departing at "
-							+ p.getBookedRoute().getDepartureTime() + ". Your seat tier is " + tierString(p.getSeatTier()),
+			JOptionPane.showMessageDialog(null, "Your booking is currently " + p.getBookedRoute().getStartLocation()
+					+ "->" + p.getBookedRoute().getEndLocation() + " departing at "
+					+ p.getBookedRoute().getDepartureTime() + ". Your seat tier is " + tierString(p.getSeatTier()),
 					"Viewing Booking", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
@@ -827,8 +832,6 @@ class LoginPanel extends JPanel {
 		manage_train.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manage_train();
-				Data.saveData(data1);
-				System.out.println("Saved data");
 			}
 		});
 
@@ -836,7 +839,7 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				cancel_train();
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Cancel train: Saved train cancellation data into system database.");
 			}
 		});
 
@@ -844,23 +847,22 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				create_train();
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Create Train: Saved train creation data into system database.");
 			}
 		});
 
 		logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logout(logout);
+				Manager.saveData(people_list);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Saving cache into main database.");
 			}
 		});
 
 		manage_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manage_route();
-				Data.saveData(data1);
-				System.out.println("Saved data");
 			}
 		});
 
@@ -868,7 +870,7 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				create_route();
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Create route: Saved route data into system database.");
 			}
 		});
 	}
@@ -981,7 +983,7 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				change_route_price(r);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Change Route Price: Saved new route price into system database.");
 			}
 		});
 
@@ -989,7 +991,7 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				change_route_time(r);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Change Route Time: Saved new route schedule into system database.");
 			}
 		});
 
@@ -1103,7 +1105,7 @@ class LoginPanel extends JPanel {
 				r.setArrivalTime(arrive);
 				r.setDepartureTime(depart);
 				r.setPrice(pricing);
-				data1.get_routes().add(r);
+				data1.add_route(r);
 				String success_msg = "Successfully created new route " + start + " - " + end;
 				JOptionPane.showMessageDialog(null, success_msg, "Success", JOptionPane.PLAIN_MESSAGE);
 			}
@@ -1114,7 +1116,6 @@ class LoginPanel extends JPanel {
 		JFrame mainMenuFrame = (JFrame) SwingUtilities.getRoot(logoutbutton);
 		mainMenuFrame.dispose();
 		MainGUI maingui = new MainGUI();
-
 		maingui.setVisible(true);
 	}
 
@@ -1128,17 +1129,17 @@ class LoginPanel extends JPanel {
 
 		String code_str = traincode.getText();
 
-		boolean repeat = false;
-		for (int i = 0; i < data1.get_trains().size(); i++) {
-			if (data1.get_trains().get(i).getTrainCode() == Integer.valueOf(code_str)) {
-				repeat = true;
-			}
-		}
-
 		if (option == JOptionPane.OK_OPTION) {
 			if (code_str.equals("")) {
 				String error_message = "Please input train code.";
 				JOptionPane.showMessageDialog(null, error_message, "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			boolean repeat = false;
+			for (int i = 0; i < data1.get_trains().size(); i++) {
+				if (data1.get_trains().get(i).getTrainCode() == Integer.valueOf(code_str)) {
+					repeat = true;
+				}
 			}
 			if (Integer.valueOf(code_str) < 0) {
 				String error_message = "Train code must 0 or greater";
@@ -1254,7 +1255,7 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				update_status(t);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Update Train Status: Saving new train status into database");
 			}
 		});
 
@@ -1262,29 +1263,27 @@ class LoginPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				set_ticket_price(t);
 				Data.saveData(data1);
-				System.out.println("Saved data");
+				System.out.println("Update Train Ticket price: Saving new ticket prices into database");
 			}
 		});
 
 		set_seat_amount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				set_seat_amount(t);
+				Data.saveData(data1);
+				System.out.println("Update Train Seat Count: Saving new train seat count into database");
 			}
 		});
 
 		manage_passengers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				manage_passengers(t);
-				Data.saveData(data1);
-				System.out.println("Saved data");
 			}
 		});
 
 		add_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				add_route(t);
-				Data.saveData(data1);
-				System.out.println("Saved data");
 			}
 		});
 
@@ -1322,14 +1321,28 @@ class LoginPanel extends JPanel {
 			int t2 = Integer.valueOf(tier2.getText());
 			int t3 = Integer.valueOf(tier3.getText());
 
-			if (t1 < 0 || t2 < 0 || t3 < 0) {
-				JOptionPane.showMessageDialog(null, "Seat amount cannot be lower than 0.", "Error",
+			int t1booked = 0;
+			int t2booked = 0;
+			int t3booked = 0;
+			for (Passenger p : t.getPassengers()) {
+				if (p.getSeatTier() == 0) {
+					t1++;
+				} else if (p.getSeatTier() == 1) {
+					t2++;
+				} else if (p.getSeatTier() == 2) {
+					t3++;
+				}
+			}
+
+			if (t1 - t1booked < 0 || t2 - t2booked < 0 || t3 - t3booked < 0) {
+				JOptionPane.showMessageDialog(null,
+						"Seat amount cannot be lower than 0, including currently booked passengers.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
 			} else {
-				t.setSeatAmount(t1, 0);
-				t.setSeatAmount(t2, 1);
-				t.setSeatAmount(t3, 2);
+				t.setSeatAmount(t1 - t1booked, 0);
+				t.setSeatAmount(t2 - t2booked, 1);
+				t.setSeatAmount(t3 - t3booked, 2);
 				JOptionPane.showMessageDialog(null, "Seat amount has been changed.", "Success",
 						JOptionPane.PLAIN_MESSAGE);
 				return;
@@ -1382,12 +1395,16 @@ class LoginPanel extends JPanel {
 		select_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				select_route(t);
+				Data.saveData(data1);
+				System.out.println("Add Route: Saving existing new train route into database");
 			}
 		});
 
 		add_route.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				add_new_route(t);
+				Data.saveData(data1);
+				System.out.println("Add Route: Saving new train route into database");
 			}
 		});
 
@@ -1485,7 +1502,12 @@ class LoginPanel extends JPanel {
 
 		if (option == JOptionPane.OK_OPTION) {
 			String passenger_msg = "Name: " + t.getPassengers().get(selectedValue).getName() + "\nRoute: " + route_msg
-					+ "\nSeat: NOT IMPLEMENTED";
+					+ "\nSeat tier: " + tierString(t.getPassengers().get(selectedValue).getSeatTier())
+					+ "\nThis passenger booked the route: "
+					+ t.getPassengers().get(selectedValue).getBookedRoute().getStartLocation() + " - "
+					+ t.getPassengers().get(selectedValue).getBookedRoute().getEndLocation() + ". With schedule: "
+					+ Route.timeDisplay(t.getPassengers().get(selectedValue).getBookedRoute().getDepartureTime())
+					+ " - " + Route.timeDisplay(t.getPassengers().get(selectedValue).getBookedRoute().getArrivalTime());
 			JOptionPane.showMessageDialog(null, passenger_msg,
 					"Passenger " + t.getPassengers().get(selectedValue).getName() + " Info", JOptionPane.PLAIN_MESSAGE);
 		}
@@ -1493,7 +1515,6 @@ class LoginPanel extends JPanel {
 
 	private void select_route(Train t) {
 		ArrayList<String> options = new ArrayList<String>();
-
 		if (data1.get_routes().size() == 0) {
 			JOptionPane.showMessageDialog(null, "There are currently no routes", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
@@ -1592,6 +1613,7 @@ class LoginPanel extends JPanel {
 				PrintStream old = System.out;
 				System.setOut(ps);
 				t.addRoute(r);
+				data1.add_route(r);
 				System.out.flush();
 				System.setOut(old);
 				String[] msgArr = baos.toString().split("\n");
