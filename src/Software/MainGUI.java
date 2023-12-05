@@ -1239,7 +1239,39 @@ class LoginPanel extends JPanel {
 	}
 	
 	private void set_seat_amount(Train t) {
-		
+		JTextField tier1 = new JTextField();
+		JTextField tier2 = new JTextField();
+		JTextField tier3 = new JTextField();
+
+		Object[] field = { "Economy seat", tier1, "Business seat", tier2, "First Class seat", tier3 };
+
+		int option = JOptionPane.showConfirmDialog(null, field, "Change seat amount", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+
+		if (option == JOptionPane.OK_OPTION) {
+			if (tier1.getText().equals("") || tier2.getText().equals("") || tier3.getText().equals("")) {
+				JOptionPane.showMessageDialog(null, "Please enter all the seats categories.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			int t1 = Integer.valueOf(tier1.getText());
+			int t2 = Integer.valueOf(tier2.getText());
+			int t3 = Integer.valueOf(tier3.getText());
+
+			if (t1 < 0 || t2 < 0 || t3 < 0) {
+				JOptionPane.showMessageDialog(null, "Seat amount cannot be lower than 0.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			else {
+				t.setSeatAmount(t1, 0);
+				t.setSeatAmount(t2, 1);
+				t.setSeatAmount(t3, 2);
+				JOptionPane.showMessageDialog(null, "Seat amount has been changed.", "Success",
+						JOptionPane.PLAIN_MESSAGE);
+				return;
+			}
+		}
 	}
 
 	private void display_info(Train t) {
@@ -1323,7 +1355,6 @@ class LoginPanel extends JPanel {
 	}
 
 	private void set_ticket_price(Train t) {
-		// ArrayList<String>options = new ArrayList<String>();
 		JTextField tier1 = new JTextField();
 		JTextField tier2 = new JTextField();
 		JTextField tier3 = new JTextField();
@@ -1352,6 +1383,9 @@ class LoginPanel extends JPanel {
 				t.setSeat(t1, 0);
 				t.setSeat(t2, 1);
 				t.setSeat(t3, 2);
+				JOptionPane.showMessageDialog(null, "Seat prices have been changed.", "Success",
+						JOptionPane.PLAIN_MESSAGE);
+				return;
 			}
 		}
 	}
