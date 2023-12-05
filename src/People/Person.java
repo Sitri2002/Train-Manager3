@@ -55,12 +55,13 @@ public abstract class Person implements Serializable {
 	}
 	
 	public static void saveData(ArrayList<Person> p){
+		System.out.println("Saving");
 		FileOutputStream fileOut = null;
 		ObjectOutputStream objOut= null;
 
 		try 
 		{
-			fileOut = new FileOutputStream("root/accounts.ser");		//the Employee object makes its way to serial data in the file Employee.ser
+			fileOut = new FileOutputStream("./root/accounts.ser");		//the Employee object makes its way to serial data in the file Employee.ser
 			objOut = new ObjectOutputStream(fileOut);
 			objOut.writeObject(p);
 			objOut.close();

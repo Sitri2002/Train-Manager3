@@ -275,87 +275,86 @@ class LoginPanel extends JPanel {
 		// Check the result when OK is clicked
 		if (result == JOptionPane.OK_OPTION) {
 			String selectedValue = (String) comboBox.getSelectedItem();
-			
+
 			// check if all fields are not empty
-			if (isEmpty(username) || isEmpty(password) || isEmpty(name)
-                    || isEmpty(email) || isEmpty(password)) {
-                JOptionPane.showMessageDialog(null, "Error: Please fill in all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            }
-			
+			if (isEmpty(username) || isEmpty(password) || isEmpty(name) || isEmpty(email) || isEmpty(password)) {
+				JOptionPane.showMessageDialog(null, "Error: Please fill in all fields.", "Input Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+
 			else {
-					if (selectedValue.equals("Passenger")) {
-		
-							if (!isValidUsername(username_str)) {
-								JOptionPane.showMessageDialog(null,
-										"That username is already being used.\nPlease enter a different one.",
-										"Username already taken", JOptionPane.ERROR_MESSAGE);
-							}
-		
-							else if (!isValidPassword(password_str)) {
-								JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
-										"Please enter a new password", JOptionPane.ERROR_MESSAGE);
-							} else {
-								Passenger p = new Passenger();
-								p.setName(name_str);
-								p.setUsername(username_str);
-								p.setPassword(password_str);
-								p.setEmail(email_str);
-								people_list.add(p);
-								passenger_list.add(p);
-		
-								Passenger.saveData(people_list);
-		
-								JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
-							}
-						}
-			
-					else if (selectedValue.equals("Manager")) {
-								if (!isValidUsername(username_str)) {
-									JOptionPane.showMessageDialog(null,
-											"That username is already being used.\nPlease enter a different one.",
-											"Username already taken", JOptionPane.ERROR_MESSAGE);
-								}
-		
-								else if (!isValidPassword(password_str)) {
-									JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
-											"Please enter a new password", JOptionPane.ERROR_MESSAGE);
-								} else {
-									Manager m = new Manager();
-									m.setName(name_str);
-									m.setUsername(username_str);
-									m.setPassword(password_str);
-									m.setEmail(email_str);
-									people_list.add(m);
-									manager_list.add(m);
-		
-									Manager.saveData(people_list);
-		
-									JOptionPane.showMessageDialog(null,
-											"Created a " + selectedValue + " account for " + name_str);
-								}
-							}
+				if (selectedValue.equals("Passenger")) {
+
+					if (!isValidUsername(username_str)) {
+						JOptionPane.showMessageDialog(null,
+								"That username is already being used.\nPlease enter a different one.",
+								"Username already taken", JOptionPane.ERROR_MESSAGE);
+					}
+
+					else if (!isValidPassword(password_str)) {
+						JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
+								"Please enter a new password", JOptionPane.ERROR_MESSAGE);
+					} else {
+						Passenger p = new Passenger();
+						p.setName(name_str);
+						p.setUsername(username_str);
+						p.setPassword(password_str);
+						p.setEmail(email_str);
+						people_list.add(p);
+						passenger_list.add(p);
+
+						Passenger.saveData(people_list);
+
+						JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
+					}
+				}
+
+				else if (selectedValue.equals("Manager")) {
+					if (!isValidUsername(username_str)) {
+						JOptionPane.showMessageDialog(null,
+								"That username is already being used.\nPlease enter a different one.",
+								"Username already taken", JOptionPane.ERROR_MESSAGE);
+					}
+
+					else if (!isValidPassword(password_str)) {
+						JOptionPane.showMessageDialog(null, "Password must be 8 characters or more.",
+								"Please enter a new password", JOptionPane.ERROR_MESSAGE);
+					} else {
+						Manager m = new Manager();
+						m.setName(name_str);
+						m.setUsername(username_str);
+						m.setPassword(password_str);
+						m.setEmail(email_str);
+						people_list.add(m);
+						manager_list.add(m);
+
+						Manager.saveData(people_list);
+
+						JOptionPane.showMessageDialog(null, "Created a " + selectedValue + " account for " + name_str);
 					}
 				}
 			}
+		}
+	}
 
 	// find if username is already taken... needs to be unique
 	private boolean isValidUsername(String username) {
-		people_list = Person.loadData();
-
-		for (int i = 0; i < people_list.size(); i++) {
-			if (people_list.get(i).getUsername().equals(username)) {
-				return false;
-			}
-		}
+//		people_list = Person.loadData();
+//
+//		for (int i = 0; i < people_list.size(); i++) {
+//			if (people_list.get(i).getUsername().equals(username)) {
+//				return false;
+//			}
+//		}
 		return true; // default case
 	}
 
 	// check if password is 8 or more characters
 	private boolean isValidPassword(String password) {
-		people_list = Person.loadData();
-		if (password.length() < 8) {
-			return false;
-		}
+//		people_list = Person.loadData();
+//		if (password.length() < 8) {
+//			return false;
+//		}
 		return true; // default case
 	}
 
@@ -378,7 +377,7 @@ class LoginPanel extends JPanel {
 		JFrame main_menu = new JFrame("Train Reservation System");
 
 		main_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		main_menu.setSize(475, 190);
+		main_menu.setSize(470, 240);
 		main_menu.setLocationRelativeTo(null);
 		main_menu.setResizable(false);
 
@@ -526,7 +525,7 @@ class LoginPanel extends JPanel {
 
 				JFrame frame = new JFrame("Route Selection");
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-				frame.setSize(400, 300);
+				frame.setSize(500, 500);
 				frame.setLayout(new BorderLayout());
 				frame.setLocationRelativeTo(null);
 
@@ -568,27 +567,71 @@ class LoginPanel extends JPanel {
 										+ data1.get_trains().get(i).getRouteList().get(j).getDepartureTime()
 										+ ", Arriving at: "
 										+ data1.get_trains().get(i).getRouteList().get(j).getArrivalTime() + "<br>"
-										+ "Price: $" + data1.get_trains().get(i).getRouteList().get(j).getPrice()
-										+ "</html>");
+										+ "Base route price: $"
+										+ data1.get_trains().get(i).getRouteList().get(j).getPrice()
+										+ "<br>Economy seat: $"
+										+ data1.get_trains().get(i).getRouteList().get(j).getPrice()
+												* data1.get_trains().get(i).getSeatTier(0)
+										+ "<br>Economy seat remaining: " + data1.get_trains().get(i).getSeatAmount()[0]
+										+ "<br>Business seat: $"
+										+ data1.get_trains().get(i).getRouteList().get(j).getPrice()
+												* data1.get_trains().get(i).getSeatTier(1)
+										+ "<br>Business seat remaining: "
+										+ data1.get_trains().get(i).getSeatAmount()[1] + "<br> First Class seat: $"
+										+ data1.get_trains().get(i).getRouteList().get(j).getPrice()
+												* data1.get_trains().get(i).getSeatTier(2)
+										+ "<br>First Class seat remaining: "
+										+ data1.get_trains().get(i).getSeatAmount()[2] + "</html>");
 								JButton selectButton = new JButton("Select");
 								selectButton.addActionListener(new ActionListener() {
 									@Override
-									public void actionPerformed(ActionEvent e) { // select button for this specific
-																					// train
-										// showConfirmationGUI(data1.get_trains().get(i).getRouteList().get(j), p,
-										// data1.get_trains().get(i));
-										p.bookTrain(data1.get_trains().get(finali),
-												data1.get_trains().get(finali).getRouteList().get(finalj));
-										JOptionPane.showMessageDialog(null, "You have successfully booked the train to "
-												+ data1.get_trains().get(finali).getRouteList().get(finalj)
-														.getEndLocation()
-												+ " that departs at "
-												+ data1.get_trains().get(finali).getRouteList().get(finalj)
-														.getDepartureTime()
-												+ " for $"
-												+ data1.get_trains().get(finali).getRouteList().get(finalj).getPrice(),
-												"Booked train", JOptionPane.PLAIN_MESSAGE);
-										frame.dispose();
+									public void actionPerformed(ActionEvent e) {
+										JFrame seat_menu = new JFrame("Choose seat tier.");
+										seat_menu.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+										seat_menu.setSize(470, 200);
+										seat_menu.setResizable(false);
+										seat_menu.setLocationRelativeTo(null);
+
+										// JPanel imagePanel = new JPanel(new BorderLayout());
+
+										JPanel pane1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+										seat_menu.setContentPane(pane1);
+										// pane1.add(new JLabel(new ImageIcon("wildcatLogo.png")));
+
+										pane1.setBackground(new Color(173, 216, 230));
+
+										JButton t1 = new JButton("Economy Seat");
+										JButton t2 = new JButton("Business Seat");
+										JButton t3 = new JButton("First Class Seat");
+
+										pane1.add(t1);
+										pane1.add(t2);
+										pane1.add(t3);
+
+										t1.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) {
+												bookSeat(p, 0, finali, finalj, frame);
+												seat_menu.dispose();
+											}
+										});
+
+										t2.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) {
+												bookSeat(p, 1, finali, finalj, frame);
+												seat_menu.dispose();
+											}
+										});
+
+										t3.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) {
+												bookSeat(p, 2, finali, finalj, frame);
+												seat_menu.dispose();
+											}
+										});
+
+										seat_menu.setContentPane(pane1);
+										seat_menu.setVisible(true);
+
 									}
 								});
 								// routeLabel.setHorizontalAlignment();
@@ -609,6 +652,34 @@ class LoginPanel extends JPanel {
 			}
 		}
 
+	}
+	
+	private static String tierString(int tier) {
+		String tierStr = "";
+		if (tier == 0) {
+			tierStr = "Economy";
+		}
+		else if (tier == 1) {
+			tierStr = "Business";
+		}
+		else {
+			tierStr = "First Class";
+		}
+		return tierStr;
+	}
+
+	private void bookSeat(Passenger p, int tier, int finali, int finalj, JFrame frame) {
+		p.bookTrain(data1.get_trains().get(finali), data1.get_trains().get(finali).getRouteList().get(finalj), tier);
+		
+		JOptionPane.showMessageDialog(null,
+				"You have successfully booked the train to "
+						+ data1.get_trains().get(finali).getRouteList().get(finalj).getEndLocation()
+						+ " that departs at "
+						+ data1.get_trains().get(finali).getRouteList().get(finalj).getDepartureTime() + " for $"
+						+ data1.get_trains().get(finali).getRouteList().get(finalj).getPrice()
+								* data1.get_trains().get(finali).getSeatTier(tier) + ". Your seat tier is " + tierString(tier) + ".",
+				"Booked train", JOptionPane.PLAIN_MESSAGE);
+		frame.dispose();
 	}
 
 	private Boolean isThereRouteAvailable(String dep, String dest) {
@@ -666,7 +737,7 @@ class LoginPanel extends JPanel {
 		}
 	}
 
-	private void showConfirmationGUI(Route selectedRoute, Passenger passenger, Train t) {
+	private void showConfirmationGUI(Route selectedRoute, Passenger passenger, Train t, int tier) {
 		JFrame confirmationFrame = new JFrame("Confirmation");
 		confirmationFrame.setSize(300, 150);
 		confirmationFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -680,7 +751,7 @@ class LoginPanel extends JPanel {
 				// Perform actions on confirmation if needed
 				JOptionPane.showMessageDialog(null, "Train booked successfully");
 				confirmationFrame.dispose();
-				passenger.bookTrain(t, selectedRoute);
+				passenger.bookTrain(t, selectedRoute, tier);
 			}
 		});
 
@@ -689,7 +760,7 @@ class LoginPanel extends JPanel {
 		confirmationFrame.setLocationRelativeTo(null);
 		confirmationFrame.setVisible(true);
 	}
-	
+
 	private void viewBookings(String name, Passenger p) {
 		if (p.getbookedTrain() == null) {
 			JOptionPane.showMessageDialog(null, "You have no current bookings.\n", "No bookings",
@@ -701,7 +772,7 @@ class LoginPanel extends JPanel {
 			JOptionPane.showMessageDialog(null,
 					"Your booking is currently " + p.getBookedRoute().getStartLocation() + "->"
 							+ p.getBookedRoute().getEndLocation() + " departing at "
-							+ p.getBookedRoute().getDepartureTime(),
+							+ p.getBookedRoute().getDepartureTime() + ". Your seat tier is " + tierString(p.getSeatTier()),
 					"Viewing Booking", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
@@ -1205,7 +1276,7 @@ class LoginPanel extends JPanel {
 				set_ticket_price(t);
 			}
 		});
-		
+
 		set_seat_amount.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				set_seat_amount(t);
@@ -1237,7 +1308,7 @@ class LoginPanel extends JPanel {
 
 		manage_menu.setVisible(true);
 	}
-	
+
 	private void set_seat_amount(Train t) {
 		JTextField tier1 = new JTextField();
 		JTextField tier2 = new JTextField();
@@ -1262,8 +1333,7 @@ class LoginPanel extends JPanel {
 				JOptionPane.showMessageDialog(null, "Seat amount cannot be lower than 0.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
-			}
-			else {
+			} else {
 				t.setSeatAmount(t1, 0);
 				t.setSeatAmount(t2, 1);
 				t.setSeatAmount(t3, 2);
@@ -1378,8 +1448,7 @@ class LoginPanel extends JPanel {
 				JOptionPane.showMessageDialog(null, "Seat price cannot be lower than the base route price.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 				return;
-			}
-			else {
+			} else {
 				t.setSeat(t1, 0);
 				t.setSeat(t2, 1);
 				t.setSeat(t3, 2);
@@ -1547,9 +1616,9 @@ class LoginPanel extends JPanel {
 
 	// Utility functions
 	private static boolean isEmpty(JTextField textField) {
-        return textField.getText().trim().isEmpty();
-    }
-	
+		return textField.getText().trim().isEmpty();
+	}
+
 	private Passenger findPassenger(String name) {
 		for (Passenger p : passenger_list) {
 			if (p.getName().equalsIgnoreCase(name)) {

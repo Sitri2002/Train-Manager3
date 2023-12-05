@@ -39,25 +39,21 @@ public class Passenger extends Person {
 		this.bookedTrain = train;
 	}
 
-	public void viewTrains() {
-		
-	}
 	
-	public void viewTrainStatus() {
-		
-	}
-	
-	public void bookTrain(Train train, Route route) {
+	public void bookTrain(Train train, Route route, int tier) {
 		train.addPassenger(this);
 		this.setbookedTrain(train);
 		
 		for(Route r : train.getRouteList()) {
 			if(train.getRouteList().contains(route)) {
 				if(r == route) {
-					setBookedRoute(r); // change routelist to be only one route? : UPDATED... maybe - it is kind of hard to iterate trhough and match routes
+					setBookedRoute(r);
+					seatTier = tier;
+					train.setSeatAmount(train.getSeatAmount()[tier]-1, tier);// change routelist to be only one route? : UPDATED... maybe - it is kind of hard to iterate trhough and match routes
 				}
 		 }
 		}
+		
 	}
 	
 	public void viewBooking() {
@@ -73,7 +69,7 @@ public class Passenger extends Person {
 	
 	public void cancelBooking(Train train) {
 		train.removePassenger(this);
-		
+		train.setSeatAmount(train.getSeatAmount()[seatTier]+1, seatTier);
 		bookedTrain = null;
 	}
 	

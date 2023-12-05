@@ -250,6 +250,19 @@ public class Train implements Serializable {
 		return pm;
 	}
 
+	private String tierString(int tier) {
+		String r = "";
+		if (tier == 0) {
+			r = "Economy";
+		}
+		else if (tier == 1) {
+			r = "Business";
+		}
+		else {
+			r = "First Class";
+		}
+		return r;
+	}
 	public void trainDisplay() {
 		System.out.println("Train " + trainCode + " information:");
 		System.out.println("Status: " + status);
@@ -270,7 +283,7 @@ public class Train implements Serializable {
 		}
 		System.out.println("Passengers who booked this train:");
 		for (Passenger p : passengerList) {
-			System.out.println(p.getName() + " - Seat tier purchased: " + p.getSeatTier());
+			System.out.println(p.getName() + " - Seat tier purchased: " + tierString(p.getSeatTier()));
 		}
 	}
 }
